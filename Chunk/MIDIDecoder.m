@@ -9,7 +9,7 @@
 #import "MIDIDecoder.h"
 
 #warning 放到PCH文件中，给整个项目使用
-#define kFilePath "/Users/dn210/Documents/DESC/DESC/Trateil.mid"
+#define kFilePath "/Users/wangjiong/Desktop/Trateil.mid"
 
 @implementation MIDIDecoder
 

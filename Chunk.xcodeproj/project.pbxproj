@@ -10,9 +10,7 @@
 		FE3B0DC41DB0C6D300E36A80 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DC31DB0C6D300E36A80 /* main.m */; };
 		FE3B0DC71DB0C6D300E36A80 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DC61DB0C6D300E36A80 /* AppDelegate.m */; };
 		FE3B0DCA1DB0C6D300E36A80 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DC91DB0C6D300E36A80 /* ViewController.m */; };
-		FE3B0DCD1DB0C6D300E36A80 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FE3B0DCB1DB0C6D300E36A80 /* Main.storyboard */; };
 		FE3B0DCF1DB0C6D300E36A80 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FE3B0DCE1DB0C6D300E36A80 /* Assets.xcassets */; };
-		FE3B0DD21DB0C6D300E36A80 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FE3B0DD01DB0C6D300E36A80 /* LaunchScreen.storyboard */; };
 		FE3B0DDD1DB0C6D300E36A80 /* ChunkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DDC1DB0C6D300E36A80 /* ChunkTests.m */; };
 		FE3B0DE81DB0C6D300E36A80 /* ChunkUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DE71DB0C6D300E36A80 /* ChunkUITests.m */; };
 		FE3B0DF71DB0C71000E36A80 /* ChunkHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DF61DB0C71000E36A80 /* ChunkHeader.m */; };
@@ -49,9 +47,7 @@
 		FE3B0DC61DB0C6D300E36A80 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		FE3B0DC81DB0C6D300E36A80 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		FE3B0DC91DB0C6D300E36A80 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		FE3B0DCC1DB0C6D300E36A80 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FE3B0DCE1DB0C6D300E36A80 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		FE3B0DD11DB0C6D300E36A80 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FE3B0DD31DB0C6D300E36A80 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FE3B0DD81DB0C6D300E36A80 /* ChunkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChunkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE3B0DDC1DB0C6D300E36A80 /* ChunkTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChunkTests.m; sourceTree = "<group>"; };
@@ -135,9 +131,7 @@
 				FE3B0DC61DB0C6D300E36A80 /* AppDelegate.m */,
 				FE3B0DC81DB0C6D300E36A80 /* ViewController.h */,
 				FE3B0DC91DB0C6D300E36A80 /* ViewController.m */,
-				FE3B0DCB1DB0C6D300E36A80 /* Main.storyboard */,
 				FE3B0DCE1DB0C6D300E36A80 /* Assets.xcassets */,
-				FE3B0DD01DB0C6D300E36A80 /* LaunchScreen.storyboard */,
 				FE3B0DD31DB0C6D300E36A80 /* Info.plist */,
 				FE3B0DC21DB0C6D300E36A80 /* Supporting Files */,
 			);
@@ -263,6 +257,7 @@
 				TargetAttributes = {
 					FE3B0DBE1DB0C6D300E36A80 = {
 						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = B999UUFJ2V;
 						ProvisioningStyle = Automatic;
 					};
 					FE3B0DD71DB0C6D300E36A80 = {
@@ -302,9 +297,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FE3B0DD21DB0C6D300E36A80 /* LaunchScreen.storyboard in Resources */,
 				FE3B0DCF1DB0C6D300E36A80 /* Assets.xcassets in Resources */,
-				FE3B0DCD1DB0C6D300E36A80 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -374,25 +367,6 @@
 		};
 /* End PBXTargetDependency section */
 
-/* Begin PBXVariantGroup section */
-		FE3B0DCB1DB0C6D300E36A80 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FE3B0DCC1DB0C6D300E36A80 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		FE3B0DD01DB0C6D300E36A80 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FE3B0DD11DB0C6D300E36A80 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
-
 /* Begin XCBuildConfiguration section */
 		FE3B0DEA1DB0C6D300E36A80 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -434,7 +408,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -476,7 +450,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -488,7 +462,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Chunk/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Second.Chunk;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -499,7 +475,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Chunk/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Second.Chunk;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -511,6 +489,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = ChunkTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Second.ChunkTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -523,6 +502,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = ChunkTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Second.ChunkTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
