@@ -23,6 +23,10 @@
 @property (nonatomic,strong)NSArray<MTRKChunk *> *mtrkArray;
 
 
+//一个MIDI文件在内存中只存在一个NSData对象
+@property (nonatomic,strong)NSData *midiData;
+
+
 @end
 
 @implementation ViewController
@@ -45,6 +49,17 @@
     NSLog(@"%@",self.mtrkArray);
 }
 
+-(NSData *)midiData
+{
+    if (_midiData == nil)
+    {
+        _midiData = [NSData dataWithContentsOfFile:@kFilePath];
+    }
+    
+    return _midiData;
+}
+
+
 
 //一个大的MIDI文件分成多个轨道块，用数组保存这些轨道块
 -(NSArray<MTRKChunk *> *)mtrkArray
@@ -52,7 +67,7 @@
     if (_mtrkArray == nil)
     {
         
-        if ([MIDIDecoder sharedMIDIDecoder].midiData.length <= 23)
+        if (self.midiData.length <= 23)
         {
             NSLog(@"当前的MIDI文件不完全");
             
@@ -70,7 +85,7 @@
         //可变数组
         NSMutableArray<MTRKChunk *> *mMtrkArray = [NSMutableArray array];
         
-        [[MIDIDecoder sharedMIDIDecoder].midiData enumerateByteRangesUsingBlock:^(const void *bytes,
+        [self.midiData enumerateByteRangesUsingBlock:^(const void *bytes,
                                                        NSRange byteRange,
                                                        BOOL *stop) {
             
@@ -96,12 +111,11 @@
                         lengthStart = i + 4;
                     }
                     
+                    //清空轨道快的长度
                     [mtrkLength deleteCharactersInRange:NSMakeRange(0, mtrkLength.length)];
                     
-                    NSLog(@"轨道长度为%ld",length);
-                    
                     //初始化轨道块
-                    MTRKChunk *mtrkChunk = [[MTRKChunk alloc] initWithChunkLength:length and:i];
+                    MTRKChunk *mtrkChunk = [[MTRKChunk alloc] initWithMIDIData:self.midiData andChunkLength:length and:i];
                     
                     [mMtrkArray addObject:mtrkChunk];
                 }

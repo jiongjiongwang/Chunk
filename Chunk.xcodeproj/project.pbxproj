@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4C39C0E31DB51FA400EB04A0 /* NSArray+Log.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C39C0E21DB51FA400EB04A0 /* NSArray+Log.m */; };
 		FE3B0DC41DB0C6D300E36A80 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DC31DB0C6D300E36A80 /* main.m */; };
 		FE3B0DC71DB0C6D300E36A80 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DC61DB0C6D300E36A80 /* AppDelegate.m */; };
 		FE3B0DCA1DB0C6D300E36A80 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DC91DB0C6D300E36A80 /* ViewController.m */; };
@@ -41,6 +42,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4C39C0E11DB51FA400EB04A0 /* NSArray+Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Log.h"; sourceTree = "<group>"; };
+		4C39C0E21DB51FA400EB04A0 /* NSArray+Log.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Log.m"; sourceTree = "<group>"; };
 		FE3B0DBF1DB0C6D300E36A80 /* Chunk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chunk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE3B0DC31DB0C6D300E36A80 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		FE3B0DC51DB0C6D300E36A80 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -184,6 +187,8 @@
 		FE3B0E0B1DB0E41700E36A80 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				4C39C0E11DB51FA400EB04A0 /* NSArray+Log.h */,
+				4C39C0E21DB51FA400EB04A0 /* NSArray+Log.m */,
 				FE7343991DB49EAC003635E4 /* MIDIDecoder.h */,
 				FE73439A1DB49EAC003635E4 /* MIDIDecoder.m */,
 			);
@@ -331,6 +336,7 @@
 				FE3B0DC71DB0C6D300E36A80 /* AppDelegate.m in Sources */,
 				FE3B0E0A1DB0DFDE00E36A80 /* InformalChunkEvent.m in Sources */,
 				FE3B0DF71DB0C71000E36A80 /* ChunkHeader.m in Sources */,
+				4C39C0E31DB51FA400EB04A0 /* NSArray+Log.m in Sources */,
 				FE3B0DFD1DB0DA9800E36A80 /* ChunkEvent.m in Sources */,
 				FE3B0DC41DB0C6D300E36A80 /* main.m in Sources */,
 			);

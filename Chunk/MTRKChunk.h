@@ -19,9 +19,12 @@
 //2-当前轨道块的轨道事件数组
 @property (nonatomic,strong)NSMutableArray<ChunkEvent *> *chunkEventArray;
 
+//3-当前轨道快在总的MIDI文件中的位置
+@property (nonatomic,assign)NSUInteger location;
 
-//初始化构造方法，利用1-轨道块长度和2-当前轨道块在全局data中的位置(不包含头和长度)初始化
--(instancetype)initWithChunkLength:(NSUInteger)chunkLength and:(NSUInteger)location;
+
+//初始化构造方法，利用0-传入的MIDI的NSData形式1-轨道块长度和2-当前轨道块在全局data中的位置(不包含头和长度)初始化
+-(instancetype)initWithMIDIData:(NSData *)midiData andChunkLength:(NSUInteger)chunkLength and:(NSUInteger)location;
 
 
 

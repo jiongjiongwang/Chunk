@@ -7,13 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
-//解码MIDI文件的工具
+//解码MIDI文件
 @interface MIDIDecoder : NSObject
 
-//单例类
-+(instancetype)sharedMIDIDecoder;
 
-//MIDI源文件转换成NSData来存放
+//传入MIDI文件的路径来初始化NSData数据
 @property (nonatomic,strong)NSData *midiData;
+
 
 @end
