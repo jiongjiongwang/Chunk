@@ -17,7 +17,7 @@
 
 
 //2-当前轨道块的轨道事件数组
-@property (nonatomic,strong)NSMutableArray<ChunkEvent *> *chunkEventArray;
+@property (nonatomic,strong)NSArray<ChunkEvent *> *chunkEventArray;
 
 //3-当前轨道快在总的MIDI文件中的位置
 @property (nonatomic,assign)NSUInteger location;

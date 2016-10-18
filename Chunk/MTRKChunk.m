@@ -20,9 +20,7 @@
         _location = location;
         
         //根据传入的MIDI文件总data和当前轨道快在data中的长度和位置来设置轨道事件数组
-        [self setUpChunkEventArrayWithData:midiData andChunkLength:chunkLength and:location];
-        
-        
+      _chunkEventArray = [self setUpChunkEventArrayWithData:midiData andChunkLength:chunkLength and:location].copy;
         
         
     }
@@ -30,7 +28,7 @@
 }
 
 //根据传入的MIDI文件总data和当前轨道快在data中的长度和位置来设置轨道事件数组
--(void)setUpChunkEventArrayWithData:(NSData *)midiData andChunkLength:(NSUInteger)chunkLength and:(NSUInteger)location
+-(NSMutableArray<ChunkEvent *> *)setUpChunkEventArrayWithData:(NSData *)midiData andChunkLength:(NSUInteger)chunkLength and:(NSUInteger)location
 {
     
     //1-判断传入的data总长度是否合理
@@ -38,10 +36,14 @@
     {
         NSLog(@"当前轨道长度不合法");
         
-        return;
+        return nil;
     }
     
-    //2-根据长度和起始值来遍历data
+    //2-声明一个可变的数组
+    //可变数组
+    NSMutableArray<ChunkEvent *> *mChunkArray = [NSMutableArray array];
+    
+    //3-根据长度和起始值来遍历data
     [midiData enumerateByteRangesUsingBlock:^(const void * _Nonnull bytes, NSRange byteRange, BOOL * _Nonnull stop) {
        
 #warning 具体某一种事件的索引
@@ -117,6 +119,11 @@
                     //继续验证下一个delta-time而不会继续向下再走了
                     continue;
                 }
+                else
+                {
+                    //只有两位delta-time的时候
+                    continue;
+                }
             }
             //3-delta-time第三位是否超过80时
             if (eventDeltaNum == 3 && i - eventLocation == 2)
@@ -127,6 +134,11 @@
                     //delta-time位数再加一(4位delta-time)
                     eventDeltaNum = 4;
                     //继续验证下一个delta-time而不会继续向下再走了
+                    continue;
+                }
+                else
+                {
+                    //只有三位delta-time的时候
                     continue;
                 }
             }
@@ -177,7 +189,7 @@
                 eventLength = length + eventDeltaNum + 3;
                 
                 //根据所得到的信息来创建一个事件变量
-                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:@"FF" andEventLength:eventLength andEventLocation:eventLocation];
+                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:@"FF" andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray];
                 
 #warning 代码重复，待封装
                 //数据恢复
@@ -221,7 +233,7 @@
                 eventLength = length + eventDeltaNum + 3;
                 
                 //根据所得到的信息来创建一个事件变量
-                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:@"FF" andEventLength:eventLength andEventLocation:eventLocation];
+                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:@"FF" andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray];
                 
                 //数据更新
                 //1-location
@@ -247,7 +259,7 @@
                 eventLength = length + eventDeltaNum + 2;
                 
                 //根据所得到的信息来创建一个事件变量
-                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:@"FF" andEventLength:eventLength andEventLocation:eventLocation];
+                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:@"FF" andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray];
                 
                 //不需要数据更新
                 continue;
@@ -268,7 +280,7 @@
                 eventLength = length + eventDeltaNum + 2;
                 
                 //根据所得到的信息来创建一个事件变量
-                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:@"F0" andEventLength:eventLength andEventLocation:eventLocation];
+                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:@"F0" andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray];
                 
                 //数据恢复
                 //1-location
@@ -309,7 +321,7 @@
                 
                 
                 //根据所得到的信息来创建一个事件变量
-                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:tempString andEventLength:eventLength andEventLocation:eventLocation];
+                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:tempString andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray];
                 
                 //数据恢复
                 //1-location
@@ -347,7 +359,7 @@
                 
                 
                 //根据所得到的信息来创建一个事件变量
-                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:formalStatus andEventLength:eventLength andEventLocation:eventLocation];
+                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:formalStatus andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray];
                 
                 //数据恢复
                 //1-location
@@ -367,6 +379,9 @@
             
         }
     }];
+    
+    
+    return mChunkArray;
 }
 
 //根据所得到的信息来创建一个事件变量
@@ -375,12 +390,11 @@
                      andEventStatus:(NSString *)eventStatus
                      andEventLength:(NSUInteger)eventLength
                    andEventLocation:(NSUInteger)location
+                             withmArray:(NSMutableArray *)mChunkArray
 {
     ChunkEvent *chunkEvent = [[ChunkEvent alloc] initWithMIDIData:midiData andDeltaNum:deltaNum andEventStatus:eventStatus andEventLength:eventLength andEventLocation:location];
     
-    NSLog(@"%@",chunkEvent);
-    
-    [_chunkEventArray addObject:chunkEvent];
+    [mChunkArray addObject:chunkEvent];
 }
 
 

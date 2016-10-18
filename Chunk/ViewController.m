@@ -12,7 +12,7 @@
 #import "MIDIDecoder.h"
 
 #warning 放到PCH文件中，给整个项目使用
-#define kFilePath "/Users/dn210/Desktop/Trateil.mid"
+#define kFilePath "/Users/wangjiong/Desktop/50specia.mid"
 
 
 @interface ViewController ()
@@ -46,7 +46,20 @@
     //四分音符节奏数(一次获取完成之后无需再次加载，其值固定不变)
     NSLog(@"四分音符节奏数为%ld",(long)_chunkHead.tickNum);
     
-    NSLog(@"%@",self.mtrkArray);
+    
+    NSLog(@"轨道快2的事件数组是%@,轨道块2的事件总数是%ld",self.mtrkArray[0].chunkEventArray,self.mtrkArray[0].chunkEventArray.count);
+    
+    //求出总的delta-time
+    NSUInteger allDeltaTime = 0;
+    
+    
+    for (NSUInteger i = 0; i < self.mtrkArray[0].chunkEventArray.count; i++)
+    {
+        allDeltaTime += self.mtrkArray[0].chunkEventArray[i].eventDeltaTime;
+    }
+    
+    NSLog(@"轨道块1的delta-time总数是%ld",allDeltaTime);
+    
 }
 
 -(NSData *)midiData
@@ -117,15 +130,13 @@
                     //初始化轨道块
                     MTRKChunk *mtrkChunk = [[MTRKChunk alloc] initWithMIDIData:self.midiData andChunkLength:length and:i];
                     
-                    NSLog(@"%@",mtrkChunk);
-                    
                     [mMtrkArray addObject:mtrkChunk];
                 }
                 
             }
         }];
         
-        _mtrkArray = mMtrkArray;
+        _mtrkArray = mMtrkArray.copy;
     }
     
     return _mtrkArray;
