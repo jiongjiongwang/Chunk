@@ -10,4 +10,8 @@
 
 @implementation FFChunkEvent
 
+//重写父类的初始化方法
+
+
+
 @end

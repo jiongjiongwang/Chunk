@@ -8,7 +8,7 @@
 //轨道块类
 #import <Foundation/Foundation.h>
 #import "ChunkEvent.h"
-
+#import "FFChunkEvent.h"
 
 @interface MTRKChunk : NSObject
 

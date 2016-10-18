@@ -12,7 +12,7 @@
 #import "MIDIDecoder.h"
 
 #warning 放到PCH文件中，给整个项目使用
-#define kFilePath "/Users/wangjiong/Desktop/Trateil.mid"
+#define kFilePath "/Users/dn210/Desktop/Trateil.mid"
 
 
 @interface ViewController ()
@@ -116,6 +116,8 @@
                     
                     //初始化轨道块
                     MTRKChunk *mtrkChunk = [[MTRKChunk alloc] initWithMIDIData:self.midiData andChunkLength:length and:i];
+                    
+                    NSLog(@"%@",mtrkChunk);
                     
                     [mMtrkArray addObject:mtrkChunk];
                 }
