@@ -21,7 +21,7 @@
 //3-事件总长度
 @property (nonatomic,assign)NSUInteger eventLength;
 
-//4-当前轨道快在总的MIDI文件中的位置
+//4-当前事件在总的MIDI文件中的位置
 @property (nonatomic,assign)NSUInteger location;
 
 
@@ -33,6 +33,9 @@
 //6-事件数组
 @property (nonatomic,strong)NSMutableArray *eventArray;
 
+
+//5103事件之后的值(4分音符的时长)
+//@property (nonatomic,assign)NSUInteger quartTime;
 
 
 

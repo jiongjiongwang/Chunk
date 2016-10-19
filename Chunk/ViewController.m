@@ -9,10 +9,9 @@
 #import "ViewController.h"
 #import "ChunkHeader.h"
 #import "MTRKChunk.h"
-#import "MIDIDecoder.h"
 
 #warning 放到PCH文件中，给整个项目使用
-#define kFilePath "/Users/wangjiong/Desktop/50specia.mid"
+#define kFilePath "/Users/dn210/Desktop/马勒1-4.mid"
 
 
 @interface ViewController ()
@@ -46,21 +45,115 @@
     //四分音符节奏数(一次获取完成之后无需再次加载，其值固定不变)
     NSLog(@"四分音符节奏数为%ld",(long)_chunkHead.tickNum);
     
-    
-    NSLog(@"轨道快2的事件数组是%@,轨道块2的事件总数是%ld",self.mtrkArray[0].chunkEventArray,self.mtrkArray[0].chunkEventArray.count);
-    
-    //求出总的delta-time
-    NSUInteger allDeltaTime = 0;
+    //轨道类型
+    NSLog(@"四分音符轨道类型类型为%ld",_chunkHead.chunkType);
     
     
-    for (NSUInteger i = 0; i < self.mtrkArray[0].chunkEventArray.count; i++)
+    [self CaculateMIDINum];
+}
+
+//求出当前MIDI文件的总delta-time总数
+-(void)CaculateMIDINum
+{
+    
+    //记录一下每个4分音符的时长(不断变化的)
+    NSUInteger quartTime = 500000;
+    
+    //用一个数记录一下MIDI文件的最终时长
+    float allMIDITime = 0;
+    
+    
+    
+    //遍历MIDI事件中的轨道
+    for (NSUInteger i = 0; i < _chunkHead.chunkNum; i++)
     {
-        allDeltaTime += self.mtrkArray[0].chunkEventArray[i].eventDeltaTime;
+        //当前轨道中每一个分界点的delta-time数(以5103为分界点,直到轨道结束)
+        NSUInteger chunkDeltaTime = 0;
+        
+        //当前轨道的时长
+        float chunkTime = 0.00000000;
+        
+        
+        NSLog(@"轨道块%ld,事件总数是%ld",i,self.mtrkArray[i].chunkEventArray.count);
+        
+        
+        
+        //遍历轨道中的事件(遍历每一个事件)
+        //在当前这个轨道中
+        for (NSUInteger j = 0; j < self.mtrkArray[i].chunkEventArray.count; j++)
+        {
+            ChunkEvent *chunkEvent = self.mtrkArray[i].chunkEventArray[j];
+            
+            //添加每一个事件的delta-time
+            chunkDeltaTime += chunkEvent.eventDeltaTime;
+            
+            
+            
+            
+            //出现5103事件时，4分音符时长发生变化
+            if ([chunkEvent isKindOfClass:[FF5103ChunkEvent class]])
+            {
+                
+                //4分音符时长(BPM)
+                //NSUInteger theBPM = 60000000 / quartTime;
+                
+                //NSLog(@"5103出现,在MIDI的%ld位置,当前的总时长是%f,即时BPM为%ld,原值为%ld,当前5103事件的delta-time是%ld",chunkEvent.location,chunkTime,theBPM,quartTime,chunkEvent.eventDeltaTime);
+                
+                
+                //计算4分节奏数
+                //4分节奏数(delta-time总数/四分音符节奏数)
+                float quartNum = (float)chunkDeltaTime/(float)_chunkHead.tickNum;
+                
+                //即时计算时长
+                chunkTime += quartNum * quartTime *0.001 * 0.001;
+                
+                
+                //chunkDeltaTime此时清零,进行下一波计算
+                chunkDeltaTime = 0;
+                
+                //4分音符的时长更新
+                quartTime = [[chunkEvent valueForKey:@"theQuartTime"] integerValue];
+                
+            }
+            
+           
+        }
+        
+        
+        //到当前循环结束时，在同一计算当前轨道的总时长
+        //计算4分节奏数
+        //4分节奏数(delta-time总数/四分音符节奏数)
+        float quartNum = (float)chunkDeltaTime/(float)_chunkHead.tickNum;
+        
+        //即时计算时长
+        chunkTime += quartNum * quartTime *0.001 * 0.001;
+        
+        
+        
+        NSLog(@"轨道块%ld的总时长是%f",i,chunkTime);
+        
+        if (_chunkHead.chunkType == 0)
+        {
+            allMIDITime = chunkTime;
+        }
+        else if(_chunkHead.chunkType == 1)
+        {
+            if (allMIDITime <= chunkTime)
+            {
+               allMIDITime = chunkTime;
+            }
+        }
+        else
+        {
+            allMIDITime += chunkTime;
+        }
     }
     
-    NSLog(@"轨道块1的delta-time总数是%ld",allDeltaTime);
+    NSLog(@"当前MIDI文件的总时长是%f",allMIDITime);
     
 }
+
+
 
 -(NSData *)midiData
 {

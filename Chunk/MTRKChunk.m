@@ -60,6 +60,12 @@
         //FF之后的2F事件索引
         NSUInteger ff2fIndex = 0;
         
+        //FF之后是00事件时
+        NSUInteger ff00Index = 0;
+        
+        //FF之后的21事件
+        NSUInteger ff21Index = 0;
+        
         
 #warning 2-F0事件
         //记录一下F0事件所在的索引
@@ -88,6 +94,8 @@
         {
             //转换成NSString来判断值(也可以不转)
             NSString *tempString = [NSString stringWithFormat:@"%02x",((uint8_t*)bytes)[i]];
+            
+            
             
 #warning 0-判断事件delta-time的位数,待封装代码
             //判断delta-time是否超过了80
@@ -175,13 +183,30 @@
                 //4-判断FF的下一个字符是不是00
                 if (((uint8_t*)bytes)[i] == 0x00)
                 {
-                    NSLog(@"下下个是00还是02");
+                    ff00Index = i;
                 }
+                
+                //5-判断FF的下一个字符是不是21
+                if (((uint8_t*)bytes)[i] == 0x21)
+                {
+                    ff21Index = i;
+                }
+                
+                
+                continue;
             }
             
             //当是数字状态码时，获取长度值
             if (i == numIndex + 1 && numIndex != 0)
             {
+                
+                //1-判断此时的长度字符是否超过7F
+                if ((((uint8_t*)bytes)[i] & 0x80) == 0x80)
+                {
+                    #warning 判断字符长度是否超过了7F(127)
+                    NSLog(@"FF之后的数字长度超出了7F(127)");
+                }
+                
                 //提取出长度信息
                 length = strtoul([tempString UTF8String],0,16);
                 
@@ -215,6 +240,9 @@
                 if ((((uint8_t*)bytes)[i] ^ 0x03) == 0x00)
                 {
                     length = 3;
+                    
+                    //碰到了5103事件了
+                    _FF5103Num ++;
                 }
                 else if((((uint8_t*)bytes)[i] ^ 0x05) == 0x00)
                 {
@@ -233,7 +261,18 @@
                 eventLength = length + eventDeltaNum + 3;
                 
                 //根据所得到的信息来创建一个事件变量
-                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:@"FF" andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray];
+                //判断是不是5103事件还是普通的事件
+                if ((((uint8_t*)bytes)[i] ^ 0x03) == 0x00)
+                {
+                    [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:@"FF5103" andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray];
+                }
+                else
+                {
+                    [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:@"FF" andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray];
+                }
+                
+                
+                
                 
                 //数据更新
                 //1-location
@@ -264,6 +303,76 @@
                 //不需要数据更新
                 continue;
             }
+            
+            //4-当是FF 00事件时
+            if (i == ff00Index + 1 && ff00Index != 0)
+            {
+                //(1)当此时的字符是02时
+                if (((uint8_t*)bytes)[i] == 0x02)
+                {
+                    length = 2;
+                }
+                //2-当此时的字符是00时
+                else if(((uint8_t*)bytes)[i] == 0x00)
+                {
+                    length = 0;
+                }
+                
+                //更新事件总长度
+                eventLength = length + eventDeltaNum + 3;
+                
+                //根据所得到的信息来创建一个事件变量
+                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:@"FF" andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray];
+                
+                //数据恢复
+                //1-location
+                eventLocation = eventLocation + eventLength;
+                
+                //2-i跨length个字节，无视其中的数据
+                i += length;
+                
+                //3-事件总长度
+                eventLength = 0;
+                
+                //4-delta-time位数
+                eventDeltaNum = 1;
+                
+                continue;
+            }
+            
+            //5-当是FF21事件时
+            if (i == ff21Index + 1 && ff21Index != 0)
+            {
+                length = 2;
+                
+                //更新事件总长度
+                eventLength = length + eventDeltaNum + 2;
+                
+                
+                
+                //根据所得到的信息来创建一个事件变量
+                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:@"FF" andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray];
+                
+                
+                
+                
+                
+                //数据恢复
+                //1-location
+                eventLocation = eventLocation + eventLength;
+                
+                //2-i跨length个字节，无视其中的数据
+                i += length;
+                
+                //3-事件总长度
+                eventLength = 0;
+                
+                //4-delta-time位数
+                eventDeltaNum = 1;
+                
+                continue;
+                
+            }
 #warning 2-判断，当遇到F0事件时，
             if ([tempString isEqualToString:@"f0"])
             {
@@ -273,6 +382,14 @@
             //判断f0的下一个状态码是什么(f0事件的长度)
             if (i == indexF0 + 1 && indexF0 != 0)
             {
+                
+                //1-判断此时的长度字符是否超过7F
+                if ((((uint8_t*)bytes)[i] & 0x80) == 0x80)
+                {
+#warning 判断字符长度是否超过了7F(127)
+                    NSLog(@"F0之后的数字长度超出了7F(127)");
+                }
+                
                 //提取出长度信息
                 length = strtoul([tempString UTF8String],0,16);
                 
@@ -392,7 +509,22 @@
                    andEventLocation:(NSUInteger)location
                              withmArray:(NSMutableArray *)mChunkArray
 {
-    ChunkEvent *chunkEvent = [[ChunkEvent alloc] initWithMIDIData:midiData andDeltaNum:deltaNum andEventStatus:eventStatus andEventLength:eventLength andEventLocation:location];
+    
+    ChunkEvent *chunkEvent;
+    
+    //判断是不是5103事件
+    if ([eventStatus isEqualToString:@"FF5103"])
+    {
+    
+        chunkEvent = [[FF5103ChunkEvent alloc] initWithMIDIData:midiData andDeltaNum:deltaNum andEventStatus:eventStatus andEventLength:eventLength andEventLocation:location];
+    }
+    else
+    {
+        chunkEvent = [[ChunkEvent alloc] initWithMIDIData:midiData andDeltaNum:deltaNum andEventStatus:eventStatus andEventLength:eventLength andEventLocation:location];
+    }
+    
+    //NSLog(@"%@",chunkEvent);
+    
     
     [mChunkArray addObject:chunkEvent];
 }
@@ -401,7 +533,7 @@
 
 -(NSString *)description
 {
-    return [NSString stringWithFormat:@"当前轨道快的长度是%ld,在MIDI文件中的位置是%ld",self.chunkLength,self.location];
+    return [NSString stringWithFormat:@"当前轨道快的长度是%ld,在MIDI文件中的位置是%ld,轨道中5103事件的数量是%ld",self.chunkLength,self.location,self.FF5103Num];
 }
 
 

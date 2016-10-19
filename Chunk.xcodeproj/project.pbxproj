@@ -17,10 +17,8 @@
 		FE3B0DF71DB0C71000E36A80 /* ChunkHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DF61DB0C71000E36A80 /* ChunkHeader.m */; };
 		FE3B0DFA1DB0C7A800E36A80 /* MTRKChunk.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DF91DB0C7A800E36A80 /* MTRKChunk.m */; };
 		FE3B0DFD1DB0DA9800E36A80 /* ChunkEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DFC1DB0DA9800E36A80 /* ChunkEvent.m */; };
-		FE3B0E011DB0DE0A00E36A80 /* FFChunkEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0E001DB0DE0A00E36A80 /* FFChunkEvent.m */; };
-		FE3B0E041DB0DE4C00E36A80 /* FormalChunkEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0E031DB0DE4C00E36A80 /* FormalChunkEvent.m */; };
-		FE3B0E071DB0DF8200E36A80 /* F0ChunkEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0E061DB0DF8200E36A80 /* F0ChunkEvent.m */; };
-		FE3B0E0A1DB0DFDE00E36A80 /* InformalChunkEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0E091DB0DFDE00E36A80 /* InformalChunkEvent.m */; };
+		FE489A051DB744FB00C07F54 /* FF5103ChunkEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = FE489A041DB744FB00C07F54 /* FF5103ChunkEvent.m */; };
+		FE489A081DB794D000C07F54 /* MIDISampler.m in Sources */ = {isa = PBXBuildFile; fileRef = FE489A071DB794D000C07F54 /* MIDISampler.m */; };
 		FE73439B1DB49EAC003635E4 /* MIDIDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = FE73439A1DB49EAC003635E4 /* MIDIDecoder.m */; };
 /* End PBXBuildFile section */
 
@@ -64,14 +62,11 @@
 		FE3B0DF91DB0C7A800E36A80 /* MTRKChunk.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTRKChunk.m; sourceTree = "<group>"; };
 		FE3B0DFB1DB0DA9800E36A80 /* ChunkEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChunkEvent.h; sourceTree = "<group>"; };
 		FE3B0DFC1DB0DA9800E36A80 /* ChunkEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChunkEvent.m; sourceTree = "<group>"; };
-		FE3B0DFF1DB0DE0A00E36A80 /* FFChunkEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFChunkEvent.h; sourceTree = "<group>"; };
-		FE3B0E001DB0DE0A00E36A80 /* FFChunkEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFChunkEvent.m; sourceTree = "<group>"; };
-		FE3B0E021DB0DE4C00E36A80 /* FormalChunkEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FormalChunkEvent.h; sourceTree = "<group>"; };
-		FE3B0E031DB0DE4C00E36A80 /* FormalChunkEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FormalChunkEvent.m; sourceTree = "<group>"; };
-		FE3B0E051DB0DF8200E36A80 /* F0ChunkEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = F0ChunkEvent.h; sourceTree = "<group>"; };
-		FE3B0E061DB0DF8200E36A80 /* F0ChunkEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = F0ChunkEvent.m; sourceTree = "<group>"; };
-		FE3B0E081DB0DFDE00E36A80 /* InformalChunkEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InformalChunkEvent.h; sourceTree = "<group>"; };
-		FE3B0E091DB0DFDE00E36A80 /* InformalChunkEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InformalChunkEvent.m; sourceTree = "<group>"; };
+		FE489A031DB744FB00C07F54 /* FF5103ChunkEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FF5103ChunkEvent.h; sourceTree = "<group>"; };
+		FE489A041DB744FB00C07F54 /* FF5103ChunkEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FF5103ChunkEvent.m; sourceTree = "<group>"; };
+		FE489A061DB794D000C07F54 /* MIDISampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIDISampler.h; sourceTree = "<group>"; };
+		FE489A071DB794D000C07F54 /* MIDISampler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIDISampler.m; sourceTree = "<group>"; };
+		FE489A091DB794EF00C07F54 /* GS.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = GS.sf2; sourceTree = "<group>"; };
 		FE7343991DB49EAC003635E4 /* MIDIDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIDIDecoder.h; sourceTree = "<group>"; };
 		FE73439A1DB49EAC003635E4 /* MIDIDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIDIDecoder.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -172,14 +167,8 @@
 			children = (
 				FE3B0DFB1DB0DA9800E36A80 /* ChunkEvent.h */,
 				FE3B0DFC1DB0DA9800E36A80 /* ChunkEvent.m */,
-				FE3B0DFF1DB0DE0A00E36A80 /* FFChunkEvent.h */,
-				FE3B0E001DB0DE0A00E36A80 /* FFChunkEvent.m */,
-				FE3B0E021DB0DE4C00E36A80 /* FormalChunkEvent.h */,
-				FE3B0E031DB0DE4C00E36A80 /* FormalChunkEvent.m */,
-				FE3B0E051DB0DF8200E36A80 /* F0ChunkEvent.h */,
-				FE3B0E061DB0DF8200E36A80 /* F0ChunkEvent.m */,
-				FE3B0E081DB0DFDE00E36A80 /* InformalChunkEvent.h */,
-				FE3B0E091DB0DFDE00E36A80 /* InformalChunkEvent.m */,
+				FE489A031DB744FB00C07F54 /* FF5103ChunkEvent.h */,
+				FE489A041DB744FB00C07F54 /* FF5103ChunkEvent.m */,
 			);
 			name = Events;
 			sourceTree = "<group>";
@@ -187,6 +176,9 @@
 		FE3B0E0B1DB0E41700E36A80 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				FE489A091DB794EF00C07F54 /* GS.sf2 */,
+				FE489A061DB794D000C07F54 /* MIDISampler.h */,
+				FE489A071DB794D000C07F54 /* MIDISampler.m */,
 				4C39C0E11DB51FA400EB04A0 /* NSArray+Log.h */,
 				4C39C0E21DB51FA400EB04A0 /* NSArray+Log.m */,
 				FE7343991DB49EAC003635E4 /* MIDIDecoder.h */,
@@ -327,17 +319,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FE3B0E011DB0DE0A00E36A80 /* FFChunkEvent.m in Sources */,
-				FE3B0E041DB0DE4C00E36A80 /* FormalChunkEvent.m in Sources */,
 				FE3B0DCA1DB0C6D300E36A80 /* ViewController.m in Sources */,
-				FE3B0E071DB0DF8200E36A80 /* F0ChunkEvent.m in Sources */,
+				FE489A081DB794D000C07F54 /* MIDISampler.m in Sources */,
 				FE73439B1DB49EAC003635E4 /* MIDIDecoder.m in Sources */,
 				FE3B0DFA1DB0C7A800E36A80 /* MTRKChunk.m in Sources */,
 				FE3B0DC71DB0C6D300E36A80 /* AppDelegate.m in Sources */,
-				FE3B0E0A1DB0DFDE00E36A80 /* InformalChunkEvent.m in Sources */,
 				FE3B0DF71DB0C71000E36A80 /* ChunkHeader.m in Sources */,
 				4C39C0E31DB51FA400EB04A0 /* NSArray+Log.m in Sources */,
 				FE3B0DFD1DB0DA9800E36A80 /* ChunkEvent.m in Sources */,
+				FE489A051DB744FB00C07F54 /* FF5103ChunkEvent.m in Sources */,
 				FE3B0DC41DB0C6D300E36A80 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
