@@ -16,6 +16,7 @@
                  andEventStatus:(NSString *)eventStatus
                  andEventLength:(NSUInteger)eventLength
                andEventLocation:(NSUInteger)location
+                  andIsUnformal:(BOOL)isUnFormal
 {
     if (self = [super init])
     {
@@ -27,7 +28,8 @@
         
         _deltaTimeLength = deltaNum;
         
-        
+        //判断当前的事件是不是缺失事件
+        _isUnFormal = isUnFormal;
         
         //根据以上的外界属性来得出事件的delta-time
         _eventDeltaTime = [self GetDeltaTimeWithMidiData:midiData andDeltaNum:deltaNum andEventLocation:location];
@@ -105,7 +107,7 @@ unsigned long changeReadVarLen(unsigned long firstValue,unsigned long secondValu
 -(NSString *)description
 {
     
-    return [NSString stringWithFormat:@"当前事件状态码是%@,事件长度是%ld,事件位置在%ld,当前事件的delta-time位数是%ld,当前事件的delta-time是%ld",self.eventStatus,self.eventLength,self.location,self.deltaTimeLength,self.eventDeltaTime];
+    return [NSString stringWithFormat:@"当前事件状态码是%@,事件长度是%ld,事件位置在%ld,当前事件的delta-time位数是%ld,当前事件的delta-time是%ld,当前事件是缺失事件%d",self.eventStatus,self.eventLength,self.location,self.deltaTimeLength,self.eventDeltaTime,self.isUnFormal];
 }
 
 

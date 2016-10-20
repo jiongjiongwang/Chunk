@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
+#import <UIKit/UIKit.h>
+
 
 #define SAMPLE_NODE_COUNT 16
 

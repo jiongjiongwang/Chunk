@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MIDISampler.h"
 
 @interface ViewController : UIViewController
 

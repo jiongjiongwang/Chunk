@@ -10,8 +10,10 @@
 #import "ChunkHeader.h"
 #import "MTRKChunk.h"
 
+
+
 #warning 放到PCH文件中，给整个项目使用
-#define kFilePath "/Users/dn210/Desktop/马勒1-4.mid"
+#define kFilePath "/Users/dn210/Desktop/0GAROTADE.mid"
 
 
 @interface ViewController ()
@@ -24,6 +26,9 @@
 
 //一个MIDI文件在内存中只存在一个NSData对象
 @property (nonatomic,strong)NSData *midiData;
+
+//播放音乐的Sampler对象
+@property (nonatomic,strong)MIDISampler *sampler;
 
 
 @end
@@ -39,17 +44,11 @@
     
     _chunkHead = [ChunkHeader sharedChunkHeaderFrom:kFilePath];
     
-    //轨道块总数(一次获取完成之后无需再次加载，其值固定不变)
-    NSLog(@"轨道块总数为%ld",(long)_chunkHead.chunkNum);
-    
-    //四分音符节奏数(一次获取完成之后无需再次加载，其值固定不变)
-    NSLog(@"四分音符节奏数为%ld",(long)_chunkHead.tickNum);
-    
-    //轨道类型
-    NSLog(@"四分音符轨道类型类型为%ld",_chunkHead.chunkType);
-    
+    //1-初始化
+    _sampler = [[MIDISampler alloc] init];
     
     [self CaculateMIDINum];
+    
 }
 
 //求出当前MIDI文件的总delta-time总数
@@ -62,19 +61,16 @@
     //用一个数记录一下MIDI文件的最终时长
     float allMIDITime = 0;
     
-    
-    
     //遍历MIDI事件中的轨道
     for (NSUInteger i = 0; i < _chunkHead.chunkNum; i++)
     {
-        //当前轨道中每一个分界点的delta-time数(以5103为分界点,直到轨道结束)
-        NSUInteger chunkDeltaTime = 0;
         
-        //当前轨道的时长
-        float chunkTime = 0.00000000;
+#warning 即时计算
+        //即时统计当前轨道中的delta-time
+        NSUInteger allChunkDeltaTime = 0;
         
-        
-        NSLog(@"轨道块%ld,事件总数是%ld",i,self.mtrkArray[i].chunkEventArray.count);
+        //即时计算当前轨道的时间
+        float theTime = 0.00000000;
         
         
         
@@ -84,9 +80,14 @@
         {
             ChunkEvent *chunkEvent = self.mtrkArray[i].chunkEventArray[j];
             
-            //添加每一个事件的delta-time
-            chunkDeltaTime += chunkEvent.eventDeltaTime;
             
+            allChunkDeltaTime += chunkEvent.eventDeltaTime;
+
+            
+            //即时的时长
+            theTime += (float)((float)chunkEvent.eventDeltaTime/(float)_chunkHead.tickNum) * quartTime *0.00100 * 0.00100;
+            
+            NSLog(@"事件%ld的delta-Time是%ld,即时的4分音符的时长是%ld,即时的总delta-time是%ld,即时的时间是%f",j,chunkEvent.eventDeltaTime,quartTime,allChunkDeltaTime,theTime);
             
             
             
@@ -94,63 +95,103 @@
             if ([chunkEvent isKindOfClass:[FF5103ChunkEvent class]])
             {
                 
-                //4分音符时长(BPM)
-                //NSUInteger theBPM = 60000000 / quartTime;
-                
-                //NSLog(@"5103出现,在MIDI的%ld位置,当前的总时长是%f,即时BPM为%ld,原值为%ld,当前5103事件的delta-time是%ld",chunkEvent.location,chunkTime,theBPM,quartTime,chunkEvent.eventDeltaTime);
-                
-                
-                //计算4分节奏数
-                //4分节奏数(delta-time总数/四分音符节奏数)
-                float quartNum = (float)chunkDeltaTime/(float)_chunkHead.tickNum;
-                
-                //即时计算时长
-                chunkTime += quartNum * quartTime *0.001 * 0.001;
-                
-                
-                //chunkDeltaTime此时清零,进行下一波计算
-                chunkDeltaTime = 0;
-                
                 //4分音符的时长更新
                 quartTime = [[chunkEvent valueForKey:@"theQuartTime"] integerValue];
-                
             }
+                
+                //播放音乐?(一个事件一个事件地播放音乐)
+            //[self PlaySoundWithChunkEvent:chunkEvent];
             
-           
         }
         
         
-        //到当前循环结束时，在同一计算当前轨道的总时长
-        //计算4分节奏数
-        //4分节奏数(delta-time总数/四分音符节奏数)
-        float quartNum = (float)chunkDeltaTime/(float)_chunkHead.tickNum;
-        
-        //即时计算时长
-        chunkTime += quartNum * quartTime *0.001 * 0.001;
+        NSLog(@"当前轨道块%ld的事件总数是%ld,总时长是%f",i,self.mtrkArray[i].chunkEventArray.count,theTime);
+
+        //NSLog(@"当前轨道块%ld的事件数组是%@",i,self.mtrkArray[i].chunkEventArray);
         
         
-        
-        NSLog(@"轨道块%ld的总时长是%f",i,chunkTime);
         
         if (_chunkHead.chunkType == 0)
         {
-            allMIDITime = chunkTime;
+            allMIDITime = theTime;
         }
         else if(_chunkHead.chunkType == 1)
         {
-            if (allMIDITime <= chunkTime)
+            if (allMIDITime <= theTime)
             {
-               allMIDITime = chunkTime;
+               allMIDITime = theTime;
             }
         }
         else
         {
-            allMIDITime += chunkTime;
+            allMIDITime += theTime;
         }
     }
     
     NSLog(@"当前MIDI文件的总时长是%f",allMIDITime);
     
+}
+
+
+//封装播放音乐的方法(传入一个事件)
+-(void)PlaySoundWithChunkEvent:(ChunkEvent *)chunkEvent
+{
+    //播放音乐?(一个事件一个事件地播放音乐)
+    //不播放FF和F0开头事件的音乐
+    if (chunkEvent.eventStatus.length <= 2)
+    {
+        
+        //1-事件数组的起始位置
+        NSUInteger location;
+        
+        //2-事件数组的长度
+        NSUInteger length;
+        
+        //判断是不是缺失事件
+        if (chunkEvent.isUnFormal)
+        {
+            location = chunkEvent.location + chunkEvent.deltaTimeLength;
+            
+            length = chunkEvent.eventLength - chunkEvent.deltaTimeLength + 1;
+        }
+        else
+        {
+            location = chunkEvent.location + chunkEvent.deltaTimeLength + 1;
+            
+            length = chunkEvent.eventLength - chunkEvent.deltaTimeLength;
+        }
+        
+        
+        [self sendMIDIMsgWithStatus:chunkEvent.eventStatus
+                   andEventLocation:location
+                             Length:length];
+        
+        
+    }
+}
+
+
+//播放方法
+//1-参数1:事件状态码(NSString)
+//2-参数2:当前事件的事件码在NSData中的位置
+- (void) sendMIDIMsgWithStatus:(NSString *)dataStr andEventLocation:(NSUInteger)location  Length:(NSUInteger)size
+{
+    
+    Byte statusData = strtoul([dataStr UTF8String],0,16);
+   
+    [self.midiData enumerateByteRangesUsingBlock:^(const void * _Nonnull bytes, NSRange byteRange, BOOL * _Nonnull stop) {
+       
+        
+        if (size == 3)
+        {
+            [_sampler MIDIShortMsg:statusData withData1:((uint8_t*)bytes)[location] withData2:((uint8_t*)bytes)[location + 1]];
+        }
+        else if (size == 2)
+        {
+            [_sampler MIDIShortMsg:statusData withData1:((uint8_t*)bytes)[location] withData2:0];
+        }
+        
+    }];
 }
 
 

@@ -15,6 +15,7 @@
 //1-轨道事件的delta-time位数
 @property (nonatomic,assign)NSUInteger deltaTimeLength;
 
+
 //2-事件状态码
 @property (nonatomic,copy)NSString *eventStatus;
 
@@ -25,17 +26,16 @@
 @property (nonatomic,assign)NSUInteger location;
 
 
+//5-判断当前的事件是不是缺失事件
+@property (nonatomic,assign)BOOL isUnFormal;
+
 
 //计算得到的属性
-//5-轨道事件的delta-time
+//6-轨道事件的delta-time
 @property (nonatomic,assign)NSUInteger eventDeltaTime;
 
-//6-事件数组
-@property (nonatomic,strong)NSMutableArray *eventArray;
 
 
-//5103事件之后的值(4分音符的时长)
-//@property (nonatomic,assign)NSUInteger quartTime;
 
 
 
@@ -44,7 +44,8 @@
                     andDeltaNum:(NSUInteger)deltaNum
                  andEventStatus:(NSString *)eventStatus
                  andEventLength:(NSUInteger)eventLength
-               andEventLocation:(NSUInteger)location;
+               andEventLocation:(NSUInteger)location
+                  andIsUnformal:(BOOL)isUnFormal;
 
 
 

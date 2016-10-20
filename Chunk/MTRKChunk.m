@@ -66,6 +66,8 @@
         //FF之后的21事件
         NSUInteger ff21Index = 0;
         
+        //FF事件保存一下FF事件的后续状态码
+        NSString *ffStatus;
         
 #warning 2-F0事件
         //记录一下F0事件所在的索引
@@ -192,6 +194,7 @@
                     ff21Index = i;
                 }
                 
+                ffStatus = [NSString stringWithFormat:@"FF %@",tempString];
                 
                 continue;
             }
@@ -214,7 +217,7 @@
                 eventLength = length + eventDeltaNum + 3;
                 
                 //根据所得到的信息来创建一个事件变量
-                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:@"FF" andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray];
+                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:ffStatus andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray andIsUnformal:NO];
                 
 #warning 代码重复，待封装
                 //数据恢复
@@ -260,16 +263,8 @@
                 //更新事件总长度
                 eventLength = length + eventDeltaNum + 3;
                 
-                //根据所得到的信息来创建一个事件变量
-                //判断是不是5103事件还是普通的事件
-                if ((((uint8_t*)bytes)[i] ^ 0x03) == 0x00)
-                {
-                    [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:@"FF5103" andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray];
-                }
-                else
-                {
-                    [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:@"FF" andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray];
-                }
+                
+                    [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:ffStatus andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray andIsUnformal:NO];
                 
                 
                 
@@ -298,7 +293,7 @@
                 eventLength = length + eventDeltaNum + 2;
                 
                 //根据所得到的信息来创建一个事件变量
-                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:@"FF" andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray];
+                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:ffStatus andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray andIsUnformal:NO];
                 
                 //不需要数据更新
                 continue;
@@ -322,7 +317,7 @@
                 eventLength = length + eventDeltaNum + 3;
                 
                 //根据所得到的信息来创建一个事件变量
-                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:@"FF" andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray];
+                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:ffStatus andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray andIsUnformal:NO];
                 
                 //数据恢复
                 //1-location
@@ -351,7 +346,7 @@
                 
                 
                 //根据所得到的信息来创建一个事件变量
-                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:@"FF" andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray];
+                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:ffStatus andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray andIsUnformal:NO];
                 
                 
                 
@@ -397,7 +392,7 @@
                 eventLength = length + eventDeltaNum + 2;
                 
                 //根据所得到的信息来创建一个事件变量
-                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:@"F0" andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray];
+                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:@"F0F7" andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray andIsUnformal:NO];
                 
                 //数据恢复
                 //1-location
@@ -438,7 +433,7 @@
                 
                 
                 //根据所得到的信息来创建一个事件变量
-                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:tempString andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray];
+                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:tempString andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray andIsUnformal:NO];
                 
                 //数据恢复
                 //1-location
@@ -476,7 +471,7 @@
                 
                 
                 //根据所得到的信息来创建一个事件变量
-                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:formalStatus andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray];
+                [self SetUpChunkEventArrayWithMIDIData:midiData andDeltaNum:eventDeltaNum andEventStatus:formalStatus andEventLength:eventLength andEventLocation:eventLocation withmArray:mChunkArray andIsUnformal:YES];
                 
                 //数据恢复
                 //1-location
@@ -508,22 +503,21 @@
                      andEventLength:(NSUInteger)eventLength
                    andEventLocation:(NSUInteger)location
                              withmArray:(NSMutableArray *)mChunkArray
+                             andIsUnformal:(BOOL)isUnformal
 {
     
     ChunkEvent *chunkEvent;
     
     //判断是不是5103事件
-    if ([eventStatus isEqualToString:@"FF5103"])
+    if ([eventStatus isEqualToString:@"FF 51"])
     {
     
-        chunkEvent = [[FF5103ChunkEvent alloc] initWithMIDIData:midiData andDeltaNum:deltaNum andEventStatus:eventStatus andEventLength:eventLength andEventLocation:location];
+        chunkEvent = [[FF5103ChunkEvent alloc] initWithMIDIData:midiData andDeltaNum:deltaNum andEventStatus:eventStatus andEventLength:eventLength andEventLocation:location andIsUnformal:isUnformal];
     }
     else
     {
-        chunkEvent = [[ChunkEvent alloc] initWithMIDIData:midiData andDeltaNum:deltaNum andEventStatus:eventStatus andEventLength:eventLength andEventLocation:location];
+        chunkEvent = [[ChunkEvent alloc] initWithMIDIData:midiData andDeltaNum:deltaNum andEventStatus:eventStatus andEventLength:eventLength andEventLocation:location andIsUnformal:isUnformal];
     }
-    
-    //NSLog(@"%@",chunkEvent);
     
     
     [mChunkArray addObject:chunkEvent];

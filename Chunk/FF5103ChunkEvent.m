@@ -11,9 +11,9 @@
 @implementation FF5103ChunkEvent
 
 //重写父类的init方法，在原有的init方法基础上添加计算4分音符时长的方法
--(instancetype)initWithMIDIData:(NSData *)midiData andDeltaNum:(NSUInteger)deltaNum andEventStatus:(NSString *)eventStatus andEventLength:(NSUInteger)eventLength andEventLocation:(NSUInteger)location
+-(instancetype)initWithMIDIData:(NSData *)midiData andDeltaNum:(NSUInteger)deltaNum andEventStatus:(NSString *)eventStatus andEventLength:(NSUInteger)eventLength andEventLocation:(NSUInteger)location andIsUnformal:(BOOL)isUnFormal
 {
-    if (self = [super initWithMIDIData:midiData andDeltaNum:deltaNum andEventStatus:eventStatus andEventLength:eventLength andEventLocation:location])
+    if (self = [super initWithMIDIData:midiData andDeltaNum:deltaNum andEventStatus:eventStatus andEventLength:eventLength andEventLocation:location andIsUnformal:isUnFormal])
     {
         
         //添加计算4分音符时长的方法
