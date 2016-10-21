@@ -35,7 +35,9 @@
 @property (nonatomic,assign)NSUInteger eventDeltaTime;
 
 
-
+//外界计算得到的属性
+//7-当前的事件在整个播放过程中的播放时间
+@property (nonatomic,assign)float eventPlayTime;
 
 
 
