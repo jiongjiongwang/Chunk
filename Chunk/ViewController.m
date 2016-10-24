@@ -37,6 +37,9 @@
 //设置定时器
 @property (nonatomic,strong)NSTimer *timer;
 
+//定义一个全局属性记录一下当前MIDI的总时间
+@property (nonatomic,assign)float midiAllTime;
+
 
 @end
 
@@ -118,7 +121,7 @@
 {
     
     //记录一下每个4分音符的时长(不断变化的)
-    NSUInteger quartTime = 500000;
+    NSUInteger quartTime = 0;
     
     //用一个数记录一下MIDI文件的最终时长
     float allMIDITime = 0;
@@ -156,6 +159,12 @@
             //即时的总时长赋值给事件
             chunkEvent.eventPlayTime = theTime;
             
+            /*
+            if (i == 1)
+            {
+                 NSLog(@"轨道%ld事件%ld的状态码是%@即时的总时间是%f",i,j,chunkEvent.eventStatus,theTime);
+            }
+            */
             
             
             //NSLog(@"轨道%ld事件%ld的状态码是%@,是否是缺失事件%d,其delta-Time是%ld,事件的当前时间是%f,即时的4分音符的时长是%ld,即时的总delta-time是%ld,即时的总时间是%f",i,j,chunkEvent.eventStatus,chunkEvent.isUnFormal,chunkEvent.eventDeltaTime,theChunkEventTime,quartTime,allChunkDeltaTime,theTime);
@@ -165,12 +174,19 @@
             if ([chunkEvent isKindOfClass:[FF5103ChunkEvent class]])
             {
                 
+                NSLog(@"轨道变速:%ld事件%ld的状态码是%@,即时的4分音符的时长是%ld,事件的当前时间是%f,即时的总时间是%f",i,j,chunkEvent.eventStatus,quartTime,theChunkEventTime,theTime);
+                
+                
+                
                 //4分音符的时长更新
                 quartTime = [[chunkEvent valueForKey:@"theQuartTime"] integerValue];
+                
             }
         }
         
-        //NSLog(@"当前轨道块%ld播放结束,其事件总数是%ld,总时长是%f",i,self.mtrkArray[i].chunkEventArray.count,theTime);
+        
+        
+        //NSLog(@"当前轨道块%ld其事件总数是%ld,总时长是%f",i,self.mtrkArray[i].chunkEventArray.count,theTime);
 
         //NSLog(@"当前轨道块%ld的事件数组是%@",i,self.mtrkArray[i].chunkEventArray);
         
@@ -194,6 +210,8 @@
     
     NSLog(@"当前MIDI文件的总时长是%f",allMIDITime);
     
+    _midiAllTime = allMIDITime;
+    
 }
 
 //播放MIDI文件
@@ -202,55 +220,142 @@
     NSLog(@"当前MIDI文件的轨道数:%ld",_chunkHead.chunkNum);
     
     
-    //用一个临时的可变数组来保存当前的事件
-    NSMutableArray<ChunkEvent *> *mEventArray = [NSMutableArray array];
+    //用一个数来得到最小的值
+    float lowEventTime = 0.0000000000;
     
-    //1-取轨道0的事件0的所在时间(作为基准点时间)
-    float eventTime = 0.00000000;
+    //记录一下前一个得到的最小值
+    float preLowEventTime;
     
-    //遍历MIDI事件中的轨道
-    for (NSUInteger i = 0; i < _chunkHead.chunkNum; i++)
+    //总共的时间数
+    int allTimeNum = 0;
+    
+    //定义一个数组来记录一下每一轨道的索引信息
+    NSUInteger chunkIndex[_chunkHead.chunkNum];
+    
+    
+    memset(chunkIndex, 0, sizeof(chunkIndex));
+    
+    
+    
+    NSMutableArray *mEventArray;
+    
+    allTimeNum ++;
+    
+    mEventArray = [self GetEventArrayWithTime:lowEventTime andIndexArray:chunkIndex];
+    
+    //播放0时间数组的事件
+    [self PlaySoundWithArray:mEventArray andDelayTime:0.000000];
+    preLowEventTime = lowEventTime;
+    
+    //当小于总时间时，一直循环
+    while (lowEventTime < _midiAllTime)
     {
-        //遍历轨道中的事件
-        for (NSUInteger j = 0; j < self.mtrkArray[i].chunkEventArray.count; j++)
+        //1-轨道要全部遍历结束
+        for (NSUInteger i = 0; i < _chunkHead.chunkNum; i++)
         {
-             ChunkEvent *chunkEvent = self.mtrkArray[i].chunkEventArray[j];
-            
-            NSLog(@"轨道%ld中的事件%ld的所在时间是%f",i,j,chunkEvent.eventPlayTime);
-            
-            //初始化eventTime:取轨道0的事件0的所在时间(作为基准点时间)
-            
-            
-            
-            //1-取轨道0的事件0的所在时间
-            if (chunkEvent.eventPlayTime == eventTime)
+            //2-每一个轨道的事件不需要全部遍历
+            for (NSUInteger j = chunkIndex[i]; j < self.mtrkArray[i].chunkEventArray.count; j++)
             {
-                [mEventArray addObject:chunkEvent];
+                ChunkEvent *chunkEvent = self.mtrkArray[i].chunkEventArray[j];
+                
+                NSLog(@"轨道%ld事件%ld的状态码是%@,是否是缺失事件%d,当前的事件在MIDI中的位置是%ld,即时的总时间是%f",i,j,chunkEvent.eventStatus,chunkEvent.isUnFormal,chunkEvent.location,chunkEvent.eventPlayTime);
+                
+                
+                if (chunkEvent.eventPlayTime > preLowEventTime)
+                {
+                    //说明已经更新过一次了(已经在第二个轨道了)
+                    if (lowEventTime > preLowEventTime)
+                    {
+                        if (lowEventTime >= chunkEvent.eventPlayTime)
+                        {
+                            lowEventTime = chunkEvent.eventPlayTime;
+                        }
+                    }
+                    //第一次更新(默认取第一个轨道中大于preLowEventTime的数)
+                    else
+                    {
+                        lowEventTime = chunkEvent.eventPlayTime;
+                    }
+                    
+                    chunkIndex[i] = j;
+                    
+                    break;
+                }
+                
             }
-            
         }
         
-        NSLog(@"当前轨道结束");
+        allTimeNum ++;
+        
+        NSLog(@"第%d个最小的总时间已经找到是%f",allTimeNum,lowEventTime);
+        
+        //播放音乐
+        mEventArray = [self GetEventArrayWithTime:lowEventTime andIndexArray:chunkIndex];
+        
+        //播放0时间数组的事件
+        [self PlaySoundWithArray:mEventArray andDelayTime:lowEventTime - preLowEventTime];
+        
+        //更新数据
+        preLowEventTime = lowEventTime;
     }
     
-    //2-字典中的键按照从小到大排序
-    //NSLog(@"重新分配得到的字典是%@",eventDict);
     
     
-    //播放音乐的核心代码
-    //播放音乐(一个事件一个事件地播放音乐)
-    //不播放FF和F0开头事件的音乐
-    /*
-     if (chunkEvent.eventStatus.length <= 2 && i == 5)
-     {
-     [NSThread sleepForTimeInterval:theChunkEventTime];
-     
-     [self PlaySoundWithChunkEvent:chunkEvent];
-     }
-     */
     
 }
 
+//封装一个方法:传入一个基准数,返回一个事件数组
+-(NSMutableArray<ChunkEvent *> *)GetEventArrayWithTime:(float)lowTime andIndexArray:(NSUInteger[])chunkIndex
+{
+    //用一个临时的可变数组来保存当前的事件
+    NSMutableArray<ChunkEvent *> *mEventArray = [NSMutableArray array];
+
+    
+    //1-轨道要全部遍历结束
+    for (NSUInteger i = 0; i < _chunkHead.chunkNum; i++)
+    {
+        //2-每一个轨道的事件不需要全部遍历
+        for (NSUInteger j = chunkIndex[i]; j < self.mtrkArray[i].chunkEventArray.count; j++)
+        {
+            ChunkEvent *chunkEvent = self.mtrkArray[i].chunkEventArray[j];
+            
+             NSLog(@"轨道%ld事件%ld的状态码是%@,是否是缺失事件%d,当前的事件在MIDI中的位置是%ld,即时的总时间是%f",i,j,chunkEvent.eventStatus,chunkEvent.isUnFormal,chunkEvent.location,chunkEvent.eventPlayTime);
+            
+            //根据最小值基准数来遍历
+            if (chunkEvent.eventPlayTime < lowTime)
+            {
+                continue;
+            }
+            else if(chunkEvent.eventPlayTime == lowTime)
+            {
+                [mEventArray addObject:chunkEvent];
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+    
+    return mEventArray;
+}
+
+//封装一个方法:播放数组事件
+-(void)PlaySoundWithArray:(NSMutableArray<ChunkEvent *> *)eventArray andDelayTime:(float)deltaTime
+{
+    [eventArray enumerateObjectsUsingBlock:^(ChunkEvent * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        //播放音乐的核心代码
+        //播放音乐(一个事件一个事件地播放音乐)
+        //不播放FF和F0开头事件的音乐
+    
+         if (obj.eventStatus.length <= 2)
+         {
+         [NSThread sleepForTimeInterval:deltaTime];
+         
+         [self PlaySoundWithChunkEvent:obj];
+         }
+    }];
+}
 
 
 //封装播放音乐的方法(传入一个事件)
