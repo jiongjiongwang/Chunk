@@ -14,7 +14,7 @@
 
 
 #warning 放到PCH文件中，给整个项目使用
-#define kFilePath "/Users/dn210/Desktop/Trateil.mid"
+#define kFilePath "/Users/dn210/Desktop/马勒1-4.mid"
 
 
 @interface ViewController ()
@@ -63,7 +63,7 @@
     [self CaculateMIDINum];
     
     //播放音乐
-    [self PlayTheMIDI];
+    //[self PlayTheMIDI];
 }
 
 //设置界面布局
@@ -159,27 +159,27 @@
             //即时的总时长赋值给事件
             chunkEvent.eventPlayTime = theTime;
             
-            /*
+            
             if (i == 1)
             {
-                 NSLog(@"轨道%ld事件%ld的状态码是%@即时的总时间是%f",i,j,chunkEvent.eventStatus,theTime);
+                 //NSLog(@"轨道%ld事件%ld的状态码是%@,事件的当前的delta-time是%ld,事件的即时总delta-time是%ld,事件的当前时间是%f,即时的总时间是%f",i,j,chunkEvent.eventStatus,chunkEvent.eventDeltaTime,allChunkDeltaTime,theChunkEventTime,theTime);
+                
+                NSLog(@"轨道%ld事件%ld的状态码是%@,事件的当前的delta-time是%ld,事件的即时总delta-time是%ld",i,j,chunkEvent.eventStatus,chunkEvent.eventDeltaTime,allChunkDeltaTime);
             }
-            */
             
             
-            //NSLog(@"轨道%ld事件%ld的状态码是%@,是否是缺失事件%d,其delta-Time是%ld,事件的当前时间是%f,即时的4分音符的时长是%ld,即时的总delta-time是%ld,即时的总时间是%f",i,j,chunkEvent.eventStatus,chunkEvent.isUnFormal,chunkEvent.eventDeltaTime,theChunkEventTime,quartTime,allChunkDeltaTime,theTime);
             
             
             //出现5103事件时，4分音符时长发生变化
             if ([chunkEvent isKindOfClass:[FF5103ChunkEvent class]])
             {
                 
-                NSLog(@"轨道变速:%ld事件%ld的状态码是%@,即时的4分音符的时长是%ld,事件的当前时间是%f,即时的总时间是%f",i,j,chunkEvent.eventStatus,quartTime,theChunkEventTime,theTime);
-                
-                
-                
                 //4分音符的时长更新
                 quartTime = [[chunkEvent valueForKey:@"theQuartTime"] integerValue];
+                
+                //NSLog(@"轨道变速:轨道%ld事件%ld的状态码是%@,事件的当前的delta-time是%ld,事件的即时总delta-time是%ld,事件的当前时间是%f,%f秒之后的4分音符的时长是%ld",i,j,chunkEvent.eventStatus,chunkEvent.eventDeltaTime,allChunkDeltaTime,theChunkEventTime,theTime,quartTime);
+                
+                NSLog(@"轨道变速:轨道%ld事件%ld的状态码是%@,事件的当前的delta-time是%ld,delta-time:%ld之后的4分音符的时长是%ld",i,j,chunkEvent.eventStatus,chunkEvent.eventDeltaTime,allChunkDeltaTime,quartTime);
                 
             }
         }
@@ -243,6 +243,9 @@
     
     mEventArray = [self GetEventArrayWithTime:lowEventTime andIndexArray:chunkIndex];
     
+    //NSLog(@"0时间的事件数组是%@",mEventArray);
+    
+    
     //播放0时间数组的事件
     [self PlaySoundWithArray:mEventArray andDelayTime:0.000000];
     preLowEventTime = lowEventTime;
@@ -258,7 +261,7 @@
             {
                 ChunkEvent *chunkEvent = self.mtrkArray[i].chunkEventArray[j];
                 
-                NSLog(@"轨道%ld事件%ld的状态码是%@,是否是缺失事件%d,当前的事件在MIDI中的位置是%ld,即时的总时间是%f",i,j,chunkEvent.eventStatus,chunkEvent.isUnFormal,chunkEvent.location,chunkEvent.eventPlayTime);
+                //NSLog(@"轨道%ld事件%ld的状态码是%@,是否是缺失事件%d,当前的事件在MIDI中的位置是%ld,即时的总时间是%f",i,j,chunkEvent.eventStatus,chunkEvent.isUnFormal,chunkEvent.location,chunkEvent.eventPlayTime);
                 
                 
                 if (chunkEvent.eventPlayTime > preLowEventTime)
@@ -289,6 +292,8 @@
         
         NSLog(@"第%d个最小的总时间已经找到是%f",allTimeNum,lowEventTime);
         
+        //NSLog(@"%d时间的事件数组是%@",allTimeNum,mEventArray);
+        
         //播放音乐
         mEventArray = [self GetEventArrayWithTime:lowEventTime andIndexArray:chunkIndex];
         
@@ -299,8 +304,7 @@
         preLowEventTime = lowEventTime;
     }
     
-    
-    
+    NSLog(@"播放结束");
     
 }
 
@@ -319,7 +323,7 @@
         {
             ChunkEvent *chunkEvent = self.mtrkArray[i].chunkEventArray[j];
             
-             NSLog(@"轨道%ld事件%ld的状态码是%@,是否是缺失事件%d,当前的事件在MIDI中的位置是%ld,即时的总时间是%f",i,j,chunkEvent.eventStatus,chunkEvent.isUnFormal,chunkEvent.location,chunkEvent.eventPlayTime);
+             //NSLog(@"轨道%ld事件%ld的状态码是%@,是否是缺失事件%d,当前的事件在MIDI中的位置是%ld,即时的总时间是%f",i,j,chunkEvent.eventStatus,chunkEvent.isUnFormal,chunkEvent.location,chunkEvent.eventPlayTime);
             
             //根据最小值基准数来遍历
             if (chunkEvent.eventPlayTime < lowTime)
@@ -343,6 +347,12 @@
 //封装一个方法:播放数组事件
 -(void)PlaySoundWithArray:(NSMutableArray<ChunkEvent *> *)eventArray andDelayTime:(float)deltaTime
 {
+    
+    [NSThread sleepForTimeInterval:deltaTime];
+    
+    //NSLog(@"过%f秒播放",deltaTime);
+    NSLog(@"播放的数组%@",eventArray);
+    
     [eventArray enumerateObjectsUsingBlock:^(ChunkEvent * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         //播放音乐的核心代码
         //播放音乐(一个事件一个事件地播放音乐)
@@ -350,9 +360,7 @@
     
          if (obj.eventStatus.length <= 2)
          {
-         [NSThread sleepForTimeInterval:deltaTime];
-         
-         [self PlaySoundWithChunkEvent:obj];
+             [self PlaySoundWithChunkEvent:obj];
          }
     }];
 }
