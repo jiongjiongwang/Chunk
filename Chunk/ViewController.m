@@ -10,7 +10,7 @@
 #import "ChunkHeader.h"
 #import "MTRKChunk.h"
 #import "Masonry.h"
-
+#import "FF5103ChunkEvent.h"
 
 
 #warning 放到PCH文件中，给整个项目使用
@@ -40,6 +40,8 @@
 //定义一个全局属性记录一下当前MIDI的总时间
 @property (nonatomic,assign)float midiAllTime;
 
+//定义一个数组记录一下MIDI文件中所有5103事件的数组
+@property (nonatomic,strong)NSArray<FF5103ChunkEvent *> *ff5103Array;
 
 @end
 
@@ -121,7 +123,7 @@
 {
     
     //记录一下每个4分音符的时长(不断变化的)
-    NSUInteger quartTime = 0;
+    NSUInteger quartTime;
     
     //用一个数记录一下MIDI文件的最终时长
     float allMIDITime = 0;
@@ -146,8 +148,18 @@
             ChunkEvent *chunkEvent = self.mtrkArray[i].chunkEventArray[j];
             
             
+            //即时的总delta-time
             allChunkDeltaTime += chunkEvent.eventDeltaTime;
+            
+            //更新属性值:即时的总delta-time
+            //chunkEvent.eventAllDeltaTime = allChunkDeltaTime;
+            
+            //传入即时的总delta-time来计算获取即时的4分音符时长
+            quartTime = [self GetQuartTimeWithDeltaTime:allChunkDeltaTime];
 
+            
+            
+            
             //当前事件的时长
             float theChunkEventTime = 0.00000000;
             
@@ -160,17 +172,21 @@
             chunkEvent.eventPlayTime = theTime;
             
             
+            
+            
+            /*
             if (i == 1)
             {
                  //NSLog(@"轨道%ld事件%ld的状态码是%@,事件的当前的delta-time是%ld,事件的即时总delta-time是%ld,事件的当前时间是%f,即时的总时间是%f",i,j,chunkEvent.eventStatus,chunkEvent.eventDeltaTime,allChunkDeltaTime,theChunkEventTime,theTime);
                 
                 NSLog(@"轨道%ld事件%ld的状态码是%@,事件的当前的delta-time是%ld,事件的即时总delta-time是%ld",i,j,chunkEvent.eventStatus,chunkEvent.eventDeltaTime,allChunkDeltaTime);
             }
-            
+            */
             
             
             
             //出现5103事件时，4分音符时长发生变化
+            /*
             if ([chunkEvent isKindOfClass:[FF5103ChunkEvent class]])
             {
                 
@@ -179,14 +195,15 @@
                 
                 //NSLog(@"轨道变速:轨道%ld事件%ld的状态码是%@,事件的当前的delta-time是%ld,事件的即时总delta-time是%ld,事件的当前时间是%f,%f秒之后的4分音符的时长是%ld",i,j,chunkEvent.eventStatus,chunkEvent.eventDeltaTime,allChunkDeltaTime,theChunkEventTime,theTime,quartTime);
                 
-                NSLog(@"轨道变速:轨道%ld事件%ld的状态码是%@,事件的当前的delta-time是%ld,delta-time:%ld之后的4分音符的时长是%ld",i,j,chunkEvent.eventStatus,chunkEvent.eventDeltaTime,allChunkDeltaTime,quartTime);
+                //NSLog(@"轨道变速:轨道%ld事件%ld的状态码是%@,事件的当前的delta-time是%ld,delta-time:%ld之后的4分音符的时长是%ld",i,j,chunkEvent.eventStatus,chunkEvent.eventDeltaTime,allChunkDeltaTime,quartTime);
                 
             }
+            */
         }
         
         
         
-        //NSLog(@"当前轨道块%ld其事件总数是%ld,总时长是%f",i,self.mtrkArray[i].chunkEventArray.count,theTime);
+        NSLog(@"当前轨道块%ld其事件总数是%ld,总时长是%f",i,self.mtrkArray[i].chunkEventArray.count,theTime);
 
         //NSLog(@"当前轨道块%ld的事件数组是%@",i,self.mtrkArray[i].chunkEventArray);
         
@@ -213,6 +230,94 @@
     _midiAllTime = allMIDITime;
     
 }
+
+-(NSArray<FF5103ChunkEvent *> *)ff5103Array
+{
+    if (_ff5103Array == nil)
+    {
+        
+        NSMutableArray<FF5103ChunkEvent *> *ff51mArray = [NSMutableArray array];
+        
+        //遍历MIDI事件中的轨道
+        for (NSUInteger i = 0; i < _chunkHead.chunkNum; i++)
+        {
+            
+            //即时统计当前轨道中的delta-time
+            NSUInteger allChunkDeltaTime = 0;
+            
+            
+            //遍历轨道中的事件(遍历每一个事件)
+            //在当前这个轨道中
+            for (NSUInteger j = 0; j < self.mtrkArray[i].chunkEventArray.count; j++)
+            {
+                ChunkEvent *chunkEvent = self.mtrkArray[i].chunkEventArray[j];
+                
+                //即时的总delta-time
+                allChunkDeltaTime += chunkEvent.eventDeltaTime;
+                
+                //出现5103事件时，4分音符时长发生变化
+                if ([chunkEvent isKindOfClass:[FF5103ChunkEvent class]])
+                {
+                    //更新属性值:即时的总delta-time
+                    chunkEvent.eventAllDeltaTime = allChunkDeltaTime;
+                    
+                    //NSLog(@"delta-time:%ld之后的4分音符的时长是%ld",allChunkDeltaTime,[[chunkEvent valueForKey:@"theQuartTime"] integerValue]);
+                    
+                    
+                    [ff51mArray addObject:(FF5103ChunkEvent *)chunkEvent];
+                }
+            }
+        }
+        
+        _ff5103Array = ff51mArray.copy;
+        
+    }
+    
+    return _ff5103Array;
+}
+
+
+
+//传入即时的总delta-time来计算获取即时的4分音符时长
+-(NSUInteger)GetQuartTimeWithDeltaTime:(NSUInteger)allChunkDeltaTime
+{
+    //记录一下每个4分音符的时长(不断变化的)
+    NSUInteger quartTime = 0;
+    
+    
+    //判断是否大于1
+    if (self.ff5103Array.count > 1)
+    {
+        if (allChunkDeltaTime <= self.ff5103Array[self.ff5103Array.count - 1].eventAllDeltaTime)
+        {
+            for (NSUInteger i = 0; i < self.ff5103Array.count -1; i++)
+            {
+                if (allChunkDeltaTime > self.ff5103Array[i].eventAllDeltaTime && allChunkDeltaTime <= self.ff5103Array[i+1].eventAllDeltaTime)
+                {
+                    quartTime = [self.ff5103Array[i].theQuartTime integerValue];
+                    
+                    break;
+                }
+            }
+        }
+        else
+        {
+            quartTime = [self.ff5103Array[self.ff5103Array.count -1].theQuartTime integerValue];
+        }
+    }
+    else
+    {
+        if (allChunkDeltaTime > self.ff5103Array[0].eventAllDeltaTime)
+        {
+            quartTime = [self.ff5103Array[0].theQuartTime integerValue];
+        }
+    }
+    
+    
+    return quartTime;
+}
+
+
 
 //播放MIDI文件
 -(void)PlayTheMIDI

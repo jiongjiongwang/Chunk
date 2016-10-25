@@ -39,6 +39,8 @@
 //7-当前的事件在整个播放过程中的播放时间
 @property (nonatomic,assign)float eventPlayTime;
 
+//8-当前的事件的即时delta-time
+@property (nonatomic,assign)NSUInteger eventAllDeltaTime;
 
 
 //初始化方法:传入事件的1-delta-time位数，2-事件的状态码，3-事件总长度和4-总的data,5当前轨道块在总data中的位置
