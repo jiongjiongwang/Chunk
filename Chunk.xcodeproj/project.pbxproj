@@ -10,7 +10,6 @@
 		4C39C0E31DB51FA400EB04A0 /* NSArray+Log.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C39C0E21DB51FA400EB04A0 /* NSArray+Log.m */; };
 		FE3B0DC41DB0C6D300E36A80 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DC31DB0C6D300E36A80 /* main.m */; };
 		FE3B0DC71DB0C6D300E36A80 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DC61DB0C6D300E36A80 /* AppDelegate.m */; };
-		FE3B0DCA1DB0C6D300E36A80 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DC91DB0C6D300E36A80 /* ViewController.m */; };
 		FE3B0DCF1DB0C6D300E36A80 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FE3B0DCE1DB0C6D300E36A80 /* Assets.xcassets */; };
 		FE3B0DDD1DB0C6D300E36A80 /* ChunkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DDC1DB0C6D300E36A80 /* ChunkTests.m */; };
 		FE3B0DE81DB0C6D300E36A80 /* ChunkUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DE71DB0C6D300E36A80 /* ChunkUITests.m */; };
@@ -20,6 +19,7 @@
 		FE489A051DB744FB00C07F54 /* FF5103ChunkEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = FE489A041DB744FB00C07F54 /* FF5103ChunkEvent.m */; };
 		FE489A081DB794D000C07F54 /* MIDISampler.m in Sources */ = {isa = PBXBuildFile; fileRef = FE489A071DB794D000C07F54 /* MIDISampler.m */; };
 		FE4BE6CB1DB88749001FB862 /* GS.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = FE4BE6CA1DB88749001FB862 /* GS.sf2 */; };
+		FE559E171DC0BA5600C9CF13 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE559E161DC0BA5600C9CF13 /* ViewController.m */; };
 		FE6C9CD31DB9B5C000116563 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FE6C9CB91DB9B5C000116563 /* Info.plist */; };
 		FE6C9CD41DB9B5C000116563 /* MASCompositeConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = FE6C9CBB1DB9B5C000116563 /* MASCompositeConstraint.m */; };
 		FE6C9CD51DB9B5C000116563 /* MASConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = FE6C9CBE1DB9B5C000116563 /* MASConstraint.m */; };
@@ -58,7 +58,6 @@
 		FE3B0DC51DB0C6D300E36A80 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		FE3B0DC61DB0C6D300E36A80 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		FE3B0DC81DB0C6D300E36A80 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		FE3B0DC91DB0C6D300E36A80 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		FE3B0DCE1DB0C6D300E36A80 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FE3B0DD31DB0C6D300E36A80 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FE3B0DD81DB0C6D300E36A80 /* ChunkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChunkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -78,6 +77,7 @@
 		FE489A061DB794D000C07F54 /* MIDISampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIDISampler.h; sourceTree = "<group>"; };
 		FE489A071DB794D000C07F54 /* MIDISampler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIDISampler.m; sourceTree = "<group>"; };
 		FE4BE6CA1DB88749001FB862 /* GS.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = GS.sf2; sourceTree = "<group>"; };
+		FE559E161DC0BA5600C9CF13 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		FE6C9CB91DB9B5C000116563 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FE6C9CBA1DB9B5C000116563 /* MASCompositeConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MASCompositeConstraint.h; sourceTree = "<group>"; };
 		FE6C9CBB1DB9B5C000116563 /* MASCompositeConstraint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MASCompositeConstraint.m; sourceTree = "<group>"; };
@@ -165,7 +165,7 @@
 				FE3B0DC51DB0C6D300E36A80 /* AppDelegate.h */,
 				FE3B0DC61DB0C6D300E36A80 /* AppDelegate.m */,
 				FE3B0DC81DB0C6D300E36A80 /* ViewController.h */,
-				FE3B0DC91DB0C6D300E36A80 /* ViewController.m */,
+				FE559E161DC0BA5600C9CF13 /* ViewController.m */,
 				FE3B0DCE1DB0C6D300E36A80 /* Assets.xcassets */,
 				FE3B0DD31DB0C6D300E36A80 /* Info.plist */,
 				FE3B0DC21DB0C6D300E36A80 /* Supporting Files */,
@@ -397,7 +397,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FE6C9CD91DB9B5C000116563 /* MASViewConstraint.m in Sources */,
-				FE3B0DCA1DB0C6D300E36A80 /* ViewController.m in Sources */,
 				FE6C9CD81DB9B5C000116563 /* MASViewAttribute.m in Sources */,
 				FE489A081DB794D000C07F54 /* MIDISampler.m in Sources */,
 				FE3B0DFA1DB0C7A800E36A80 /* MTRKChunk.m in Sources */,
@@ -405,6 +404,7 @@
 				FE6C9CD41DB9B5C000116563 /* MASCompositeConstraint.m in Sources */,
 				FE6C9CD61DB9B5C000116563 /* MASConstraintMaker.m in Sources */,
 				FE6C9CDC1DB9B5C000116563 /* View+MASAdditions.m in Sources */,
+				FE559E171DC0BA5600C9CF13 /* ViewController.m in Sources */,
 				FE6C9CD71DB9B5C000116563 /* MASLayoutConstraint.m in Sources */,
 				FE6C9CDD1DB9B5C000116563 /* ViewController+MASAdditions.m in Sources */,
 				FE6C9CD51DB9B5C000116563 /* MASConstraint.m in Sources */,

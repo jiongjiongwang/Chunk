@@ -158,6 +158,12 @@
             quartTime = [self GetQuartTimeWithDeltaTime:allChunkDeltaTime];
 
             
+            //传入即时的总时间来获取计算获取即时的4分音符时长
+            //quartTime = [self GetQuartTimeWithCurrentTime:theTime];
+            
+            
+            
+            
             
             
             //当前事件的时长
@@ -172,16 +178,26 @@
             chunkEvent.eventPlayTime = theTime;
             
             
-            
-            
             /*
-            if (i == 1)
+            if (i == 22)
             {
-                 //NSLog(@"轨道%ld事件%ld的状态码是%@,事件的当前的delta-time是%ld,事件的即时总delta-time是%ld,事件的当前时间是%f,即时的总时间是%f",i,j,chunkEvent.eventStatus,chunkEvent.eventDeltaTime,allChunkDeltaTime,theChunkEventTime,theTime);
                 
-                NSLog(@"轨道%ld事件%ld的状态码是%@,事件的当前的delta-time是%ld,事件的即时总delta-time是%ld",i,j,chunkEvent.eventStatus,chunkEvent.eventDeltaTime,allChunkDeltaTime);
+                
+                NSLog(@"轨道%ld事件%ld的状态码是%@,当前事件的delta-time是%ld,事件的总delta-time是%ld,事件的当前时间是%f,即时的总时间是%f,事件的即时4分音符时长是%ld",i,j,chunkEvent.eventStatus,chunkEvent.eventDeltaTime,allChunkDeltaTime,theChunkEventTime,theTime,quartTime);
+                
             }
             */
+            
+            
+            
+                             //NSLog(@"轨道%ld事件%ld的状态码是%@,当前事件的delta-time是%ld,事件的总delta-time是%ld,事件的当前时间是%f,即时的总时间是%f,事件的即时4分音符时长是%ld",i,j,chunkEvent.eventStatus,chunkEvent.eventDeltaTime,allChunkDeltaTime,theChunkEventTime,theTime,quartTime);
+                /*
+                if (quartTime == 250000 && allChunkDeltaTime != 0)
+                {
+                     NSLog(@"轨道%ld事件%ld的状态码是%@,事件的总delta-time是%ld,事件的即时4分音符时长是%ld",i,j,chunkEvent.eventStatus,allChunkDeltaTime,quartTime);
+                }
+                */
+        
             
             
             
@@ -203,7 +219,7 @@
         
         
         
-        NSLog(@"当前轨道块%ld其事件总数是%ld,总时长是%f",i,self.mtrkArray[i].chunkEventArray.count,theTime);
+        NSLog(@"当前轨道块%ld其事件总数是%ld,总deltaTime是%ld,总时长是%f",i,self.mtrkArray[i].chunkEventArray.count,allChunkDeltaTime,theTime);
 
         //NSLog(@"当前轨道块%ld的事件数组是%@",i,self.mtrkArray[i].chunkEventArray);
         
@@ -238,12 +254,20 @@
         
         NSMutableArray<FF5103ChunkEvent *> *ff51mArray = [NSMutableArray array];
         
+        //记录一下每个4分音符的时长(不断变化的)
+        NSUInteger quartTime = 250000;
+        
+        
+        
         //遍历MIDI事件中的轨道
         for (NSUInteger i = 0; i < _chunkHead.chunkNum; i++)
         {
             
             //即时统计当前轨道中的delta-time
             NSUInteger allChunkDeltaTime = 0;
+            
+            //即时计算当前轨道的时间
+            float theTime = 0.00000000;
             
             
             //遍历轨道中的事件(遍历每一个事件)
@@ -255,14 +279,31 @@
                 //即时的总delta-time
                 allChunkDeltaTime += chunkEvent.eventDeltaTime;
                 
+                
+                //当前事件的时长
+                float theChunkEventTime = 0.00000000;
+                
+                theChunkEventTime = (float)((float)chunkEvent.eventDeltaTime/(float)_chunkHead.tickNum) * quartTime *0.00100 * 0.00100;
+                
+                //即时的总时长
+                theTime += theChunkEventTime;
+                
+                
+                
                 //出现5103事件时，4分音符时长发生变化
                 if ([chunkEvent isKindOfClass:[FF5103ChunkEvent class]])
                 {
                     //更新属性值:即时的总delta-time
                     chunkEvent.eventAllDeltaTime = allChunkDeltaTime;
                     
-                    //NSLog(@"delta-time:%ld之后的4分音符的时长是%ld",allChunkDeltaTime,[[chunkEvent valueForKey:@"theQuartTime"] integerValue]);
+                    //更新即时时间属性值
+                    chunkEvent.eventPlayTime = theTime;
                     
+                    
+                    quartTime = [[chunkEvent valueForKey:@"theQuartTime"] integerValue];
+                    
+                    //NSLog(@"delta-time:%ld之后,%f秒之后的4分音符的时长是%ld",allChunkDeltaTime,theTime,quartTime);
+                    NSLog(@"delta-time:%ld之后的4分音符的时长是%ld",allChunkDeltaTime,quartTime);
                     
                     [ff51mArray addObject:(FF5103ChunkEvent *)chunkEvent];
                 }
@@ -282,7 +323,17 @@
 -(NSUInteger)GetQuartTimeWithDeltaTime:(NSUInteger)allChunkDeltaTime
 {
     //记录一下每个4分音符的时长(不断变化的)
-    NSUInteger quartTime = 0;
+    NSUInteger quartTime;
+    
+    if (self.ff5103Array.count > 0)
+    {
+        quartTime = [self.ff5103Array[0].theQuartTime integerValue];
+    }
+    else
+    {
+        quartTime = 500000;
+    }
+    
     
     
     //判断是否大于1
@@ -305,7 +356,7 @@
             quartTime = [self.ff5103Array[self.ff5103Array.count -1].theQuartTime integerValue];
         }
     }
-    else
+    else if (self.ff5103Array.count == 1)
     {
         if (allChunkDeltaTime > self.ff5103Array[0].eventAllDeltaTime)
         {
@@ -316,6 +367,79 @@
     
     return quartTime;
 }
+
+
+//传入即时的总时间来计算获取即时的4分音符时长
+-(NSUInteger)GetQuartTimeWithCurrentTime:(float)allChunkTime
+{
+    //记录一下每个4分音符的时长(不断变化的)
+    NSUInteger quartTime;
+    
+    if (self.ff5103Array.count > 0)
+    {
+        quartTime = [self.ff5103Array[0].theQuartTime integerValue];
+    }
+    else
+    {
+        quartTime = 500000;
+    }
+    
+    
+    
+    
+    //判断是否大于1
+    if (self.ff5103Array.count > 1)
+    {
+        
+        if (allChunkTime > 0)
+        {
+            if (allChunkTime <= self.ff5103Array[self.ff5103Array.count - 1].eventPlayTime)
+            {
+                for (NSUInteger i = 0; i < self.ff5103Array.count; i++)
+                {
+                    /*
+                     if (allChunkTime == self.ff5103Array[i].eventPlayTime)
+                     {
+                     quartTime = [self.ff5103Array[i].theQuartTime integerValue];
+                     
+                     break;
+                     }
+                     */
+                    /*
+                     if (allChunkTime > self.ff5103Array[i].eventPlayTime && allChunkTime <= self.ff5103Array[i+1].eventPlayTime)
+                     {
+                     quartTime = [self.ff5103Array[i].theQuartTime integerValue];
+                     
+                     break;
+                     }
+                     */
+                    
+                    if (self.ff5103Array[i].eventPlayTime > allChunkTime)
+                    {
+                        quartTime = [self.ff5103Array[i - 1].theQuartTime integerValue];
+                        
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                quartTime = [self.ff5103Array[self.ff5103Array.count -1].theQuartTime integerValue];
+            }
+        }
+    }
+    else if (self.ff5103Array.count == 1)
+    {
+        if (allChunkTime > self.ff5103Array[0].eventPlayTime)
+        {
+            quartTime = [self.ff5103Array[0].theQuartTime integerValue];
+        }
+    }
+    
+    
+    return quartTime;
+}
+
 
 
 
