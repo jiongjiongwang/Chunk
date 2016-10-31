@@ -11,7 +11,7 @@
 @interface FF5103ChunkEvent : ChunkEvent
 
 //5103事件之后的值(4分音符的时长)
-@property (nonatomic,strong)NSNumber *theQuartTime;
+@property (nonatomic,assign)NSUInteger theQuartTime;
 
 
 @end

@@ -17,7 +17,7 @@
     {
         
         //添加计算4分音符时长的方法
-        _theQuartTime = @([self CaculateTheQuartTimeWithMidiData:midiData andEventLocation:location andDeltaNum:deltaNum]);
+        _theQuartTime = [self CaculateTheQuartTimeWithMidiData:midiData andEventLocation:location andDeltaNum:deltaNum];
     }
     return self;
 }
