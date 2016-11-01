@@ -14,7 +14,7 @@
 
 
 #warning 放到PCH文件中，给整个项目使用
-#define kFilePath "/Users/dn210/Desktop/Shebang.mid"
+#define kFilePath "/Users/dn210/Desktop/Trateil.mid"
 
 
 @interface ViewController ()
@@ -33,6 +33,10 @@
 
 //定时器label
 @property (nonatomic,weak)UILabel *timeLabel;
+
+//播放/暂停音乐按钮
+@property (nonatomic,weak)UIButton *playButton;
+
 
 //设置定时器
 @property (nonatomic,strong)NSTimer *timer;
@@ -58,14 +62,6 @@
     //1-初始化
     _sampler = [[MIDISampler alloc] init];
     
-    //设置定时器
-    //_timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(labelUpdate) userInfo:nil repeats:YES];
-    
-    //求出总时间并更新一下每一个事件的播放时间
-    [self CaculateMIDINum];
-    
-    //播放音乐
-    [self PlayMIDIMultiTemp];
 }
 
 //设置界面布局
@@ -97,6 +93,36 @@
         make.centerY.equalTo(self.view.mas_centerY);
     }];
     
+    
+    
+    
+    //2-播放/暂停音乐按钮
+    UIButton *playButton = [[UIButton alloc] init];
+    
+    self.playButton = playButton;
+    
+    [self.view addSubview:playButton];
+    
+    [playButton setTitle:@"播放" forState:UIControlStateNormal];
+    
+    [playButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    
+    playButton.titleLabel.font = [UIFont systemFontOfSize:17];;
+    
+    //添加事件
+    [playButton addTarget:self action:@selector(PlayMIDI) forControlEvents:UIControlEventTouchUpInside];
+    
+    
+    //设置约束
+    [playButton mas_makeConstraints:^(MASConstraintMaker *make) {
+       
+        make.centerX.equalTo(self.view.mas_centerX);
+        
+        make.bottom.equalTo(self.timeLabel.mas_top).offset(-10);
+        
+    }];
+    
+    
 }
 
 //定时器方法
@@ -111,6 +137,36 @@
     
 }
 
+//播放按钮方法
+-(void)PlayMIDI
+{
+    
+    //按下播放时
+    if ([_playButton.titleLabel.text isEqualToString:@"播放"])
+    {
+        [_playButton setTitle:@"暂停" forState:UIControlStateNormal];
+        
+         dispatch_async(dispatch_get_global_queue(0, 0), ^{
+         
+         //播放音乐
+         [self PlayMIDIMultiTemp];
+         
+         });
+         
+         //设置定时器
+         _timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(labelUpdate) userInfo:nil repeats:YES];
+        
+    }
+    else
+    {
+         [_playButton setTitle:@"播放" forState:UIControlStateNormal];
+    }
+    
+    
+    
+}
+
+
 //定时器销毁
 -(void)dealloc
 {
@@ -118,106 +174,86 @@
 }
 
 
-//求出当前MIDI文件的总delta-time总数
--(void)CaculateMIDINum
+-(float)midiAllTime
 {
-    
-    //记录一下每个4分音符的时长(不断变化的)
-    NSUInteger quartTime = 0;
-    
-    //用一个数记录一下MIDI文件的最终时长
-    float allMIDITime = 0;
-    
-    
-    
-    //遍历MIDI事件中的轨道
-    for (NSUInteger i = 0; i < _chunkHead.chunkNum; i++)
+    if (_midiAllTime == 0)
     {
+        //记录一下每个4分音符的时长(不断变化的)
+        NSUInteger quartTime = 0;
         
-        //即时统计当前轨道中的delta-time
-        NSUInteger allChunkDeltaTime = 0;
-        
-        //即时计算当前轨道的时间
-        float theTime = 0.00000000;
-        
-        
-        
-        
-        //遍历轨道中的事件(遍历每一个事件)
-        //在当前这个轨道中
-        for (NSUInteger j = 0; j < self.mtrkArray[i].chunkEventArray.count; j++)
+        //遍历MIDI事件中的轨道
+        for (NSUInteger i = 0; i < _chunkHead.chunkNum; i++)
         {
-            ChunkEvent *chunkEvent = self.mtrkArray[i].chunkEventArray[j];
             
+            //即时计算当前轨道的时间
+            float theTime = 0.00000000;
             
-            //即时的总delta-time
-            allChunkDeltaTime += chunkEvent.eventDeltaTime;
-            
-            //更新总的delta-time
-            chunkEvent.eventAllDeltaTime = allChunkDeltaTime;
-            
-            
-            //判断即时的总delta-time是否大于ff5103数组中的最大值
-            if (self.ff5103Array.count > 0)
+            //遍历轨道中的事件(遍历每一个事件)
+            //在当前这个轨道中
+            for (NSUInteger j = 0; j < self.mtrkArray[i].chunkEventArray.count; j++)
             {
-                if (allChunkDeltaTime > self.ff5103Array[self.ff5103Array.count - 1].eventAllDeltaTime)
+                ChunkEvent *chunkEvent = self.mtrkArray[i].chunkEventArray[j];
+                
+                
+                
+                //判断即时的总delta-time是否大于ff5103数组中的最大值
+                if (self.ff5103Array.count > 0)
                 {
-                    quartTime = self.ff5103Array[self.ff5103Array.count - 1].theQuartTime;
+                    //超过了总的5103
+                    if (chunkEvent.eventAllDeltaTime > self.ff5103Array[self.ff5103Array.count - 1].eventAllDeltaTime)
+                    {
+                        quartTime = self.ff5103Array[self.ff5103Array.count - 1].theQuartTime;
+                    }
+                    else
+                    {
+                        theTime =  self.ff5103Array[self.ff5103Array.count - 1].eventPlayTime;
+                        
+                        continue;
+                    }
                 }
-                else if(allChunkDeltaTime == self.ff5103Array[self.ff5103Array.count - 1].eventAllDeltaTime)
-                {
-                    theTime =  self.ff5103Array[self.ff5103Array.count - 1].eventPlayTime;
-                    
-                    continue;
-                }
-#warning 有待商榷
                 else
                 {
-                    theTime =  self.ff5103Array[self.ff5103Array.count - 1].eventPlayTime;
-                    
-                    continue;
+                    quartTime = 500000;
+                }
+                
+                
+                //超过的时长
+                float theSurDelataTime = 0.00000000;
+                
+                theSurDelataTime = (float)((float)(chunkEvent.eventAllDeltaTime - self.ff5103Array[self.ff5103Array.count - 1].eventAllDeltaTime)/(float)_chunkHead.tickNum) * quartTime *0.00100 * 0.00100;
+                
+                theTime = theSurDelataTime + self.ff5103Array[self.ff5103Array.count - 1].eventPlayTime;
+                
+            }
+            
+            if (_chunkHead.chunkType == 0)
+            {
+                _midiAllTime = theTime;
+            }
+            else if(_chunkHead.chunkType == 1)
+            {
+                if (_midiAllTime <= theTime)
+                {
+                    _midiAllTime = theTime;
                 }
             }
             else
             {
-                quartTime = 500000;
+                _midiAllTime += theTime;
             }
-            
-            
-            //超过的时长
-            float theSurDelataTime = 0.00000000;
-            
-            theSurDelataTime = (float)((float)(allChunkDeltaTime - self.ff5103Array[self.ff5103Array.count - 1].eventAllDeltaTime)/(float)_chunkHead.tickNum) * quartTime *0.00100 * 0.00100;
-            
-            theTime = theSurDelataTime + self.ff5103Array[self.ff5103Array.count - 1].eventPlayTime;
             
         }
         
+        NSLog(@"当前MIDI文件的总时间是:%f",_midiAllTime);
         
-        if (_chunkHead.chunkType == 0)
-        {
-            allMIDITime = theTime;
-        }
-        else if(_chunkHead.chunkType == 1)
-        {
-            if (allMIDITime <= theTime)
-            {
-               allMIDITime = theTime;
-            }
-        }
-        else
-        {
-            allMIDITime += theTime;
-        }
     }
     
-    NSLog(@"当前MIDI文件的总时长是%f",allMIDITime);
-    
-    _midiAllTime = allMIDITime;
-    
+    return _midiAllTime;
 }
 
-#warning 假设所有的5103全部存在于一个轨道的情况下
+
+
+#warning 默认5103的分布不会出现凹形状的
 -(NSArray<FF5103ChunkEvent *> *)ff5103Array
 {
     if (_ff5103Array == nil)
@@ -230,8 +266,7 @@
         
         
         //遍历MIDI事件中的轨道
-#warning 默认假设所有的变轨事件5103全部在第一个轨道之下的时候
-        for (NSUInteger i = 0; i < 1; i++)
+        for (NSUInteger i = 0; i < _chunkHead.chunkNum; i++)
         {
             
             //即时统计当前轨道中的delta-time(总的delta-time)
@@ -251,6 +286,11 @@
                 //即时的总delta-time
                 allChunkDeltaTime += chunkEvent.eventDeltaTime;
                 
+                
+                //更新属性值:即时的总delta-time
+                chunkEvent.eventAllDeltaTime = allChunkDeltaTime;
+                
+                
                 //即时计算总时间
                 //当前事件的时长
                 float theChunkEventTime = 0.00000000;
@@ -266,7 +306,7 @@
                 if ([chunkEvent isKindOfClass:[FF5103ChunkEvent class]])
                 {
                     //更新属性值:即时的总delta-time
-                    chunkEvent.eventAllDeltaTime = allChunkDeltaTime;
+                    //chunkEvent.eventAllDeltaTime = allChunkDeltaTime;
                     
                     //更新即时时间属性值
                     chunkEvent.eventPlayTime = theTime;
@@ -291,56 +331,6 @@
 
 
 
-//传入即时的总delta-time来计算获取即时的4分音符时长
--(NSUInteger)GetQuartTimeWithDeltaTime:(NSUInteger)allChunkDeltaTime
-{
-    //记录一下每个4分音符的时长(不断变化的)
-    NSUInteger quartTime;
-    
-    if (self.ff5103Array.count > 0)
-    {
-        quartTime = self.ff5103Array[0].theQuartTime;
-    }
-    else
-    {
-        quartTime = 500000;
-    }
-    
-    
-    
-    //判断是否大于1
-    if (self.ff5103Array.count > 1)
-    {
-        if (allChunkDeltaTime <= self.ff5103Array[self.ff5103Array.count - 1].eventAllDeltaTime)
-        {
-            for (NSUInteger i = 0; i < self.ff5103Array.count -1; i++)
-            {
-                if (allChunkDeltaTime > self.ff5103Array[i].eventAllDeltaTime && allChunkDeltaTime <= self.ff5103Array[i+1].eventAllDeltaTime)
-                {
-                    quartTime = self.ff5103Array[i].theQuartTime;
-                    
-                    break;
-                }
-            }
-        }
-        else
-        {
-            quartTime = self.ff5103Array[self.ff5103Array.count -1].theQuartTime;
-        }
-    }
-    else if (self.ff5103Array.count == 1)
-    {
-        if (allChunkDeltaTime > self.ff5103Array[0].eventAllDeltaTime)
-        {
-            quartTime = self.ff5103Array[0].theQuartTime;
-        }
-    }
-    
-    
-    return quartTime;
-}
-
-
 //播放MIDI文件
 -(void)PlayMIDIMultiTemp
 {
@@ -357,10 +347,10 @@
 
 
     //定义一个数组来记录一下每一轨道的索引信息(4分音符范围的数组)
+    //所在4分音符的终点
     NSUInteger quartChunkIndex[_chunkHead.chunkNum];
     
     memset(quartChunkIndex, 0, sizeof(quartChunkIndex));
-    
     
     
     
@@ -378,10 +368,10 @@
     
     allTimeNum ++;
     
-     mEventArray = [self GetEventArrayWithTime:lowEventTime andIndexArray:chunkIndex andEndIndexArray:quartChunkIndex];
+     //mEventArray = [self GetEventArrayWithTime:lowEventTime andIndexArray:chunkIndex andEndIndexArray:quartChunkIndex];
     
     //播放0时间数组的事件
-    [self PlaySoundWithArray:mEventArray andDelayTime:0.000000];
+    //[self PlaySoundWithArray:mEventArray andDelayTime:0.000000];
     
     //preLowEventTime初始为0
     preLowEventTime = lowEventTime;
@@ -454,7 +444,8 @@
         //5103数组最后一个或当前MIDI文件只有一个5103
         if (k == self.ff5103Array.count -1)
         {
-            endTime = _midiAllTime;
+            //endTime = _midiAllTime;
+            endTime = self.midiAllTime;
         }
         else
         {
@@ -501,9 +492,8 @@
             
             allTimeNum ++;
             
-            NSLog(@"第%d个最小的总时间已经找到是%f,此时的5103序列号是%ld",allTimeNum,lowEventTime,k);
+            //NSLog(@"第%d个最小的总时间已经找到是%f,此时的5103序列号是%ld",allTimeNum,lowEventTime,k);
             
-            //NSLog(@"%d时间的事件数组是%@",allTimeNum,mEventArray);
             
             //播放音乐
             //生成事件数组
@@ -514,7 +504,7 @@
             
             //更新数据
             preLowEventTime = lowEventTime;
-        }
+      }
         
     }
     
@@ -529,45 +519,45 @@
 {
     //用一个临时的可变数组来保存当前的事件
     NSMutableArray<ChunkEvent *> *mEventArray = [NSMutableArray array];
-
-
+    
     
     //1-轨道要全部遍历结束
     for (NSUInteger i = 0; i < _chunkHead.chunkNum; i++)
     {
         
+        //根据传入的lowTime设置不同的终点
+        NSUInteger endIndex;
+        
         if (lowTime == 0.0000000000)
         {
-            //遍历轨道的每一个事件
-            for (NSUInteger j = chunkIndex[i]; j < self.mtrkArray[i].chunkEventArray.count; j++)
+            endIndex = self.mtrkArray[i].chunkEventArray.count;
+        }
+        else
+        {
+            endIndex = endChunkIndex[i];
+        }
+        
+        
+        //遍历轨道的每一个事件或每一个轨道的事件不需要全部遍历
+        for (NSUInteger j = chunkIndex[i]; j < endIndex; j++)
+        {
+            ChunkEvent *chunkEvent = self.mtrkArray[i].chunkEventArray[j];
+            
+            
+            if (lowTime == 0.0000000000)
             {
-                ChunkEvent *chunkEvent = self.mtrkArray[i].chunkEventArray[j];
-                
                 //根据最小值基准数来遍历
                 if(chunkEvent.eventAllDeltaTime == 0)
                 {
-                    //NSLog(@"当前的0事件所在的轨道是%ld,所在的事件索引是%ld,当前事件的时间是%f,当前事件的状态码是%@",i,j,chunkEvent.eventPlayTime,chunkEvent.eventStatus);
-                    
                     [mEventArray addObject:chunkEvent];
                 }
                 else
                 {
                     break;
                 }
-                
             }
-                
-        }
-        else
-        {
-            //2-每一个轨道的事件不需要全部遍历
-            for (NSUInteger j = chunkIndex[i]; j < endChunkIndex[i]; j++)
+            else
             {
-                ChunkEvent *chunkEvent = self.mtrkArray[i].chunkEventArray[j];
-                
-                //NSLog(@"当前的事件所在的轨道是%ld,所在的事件索引是%ld,当前事件的时间是%f,当前事件的状态码是%@",i,j,chunkEvent.eventPlayTime,chunkEvent.eventStatus);
-                
-                
                 //根据最小值基准数来遍历
                 if (chunkEvent.eventPlayTime < lowTime)
                 {
@@ -581,9 +571,7 @@
                 {
                     break;
                 }
-                
             }
-                
         }
         
     }
@@ -597,14 +585,11 @@
     
     [NSThread sleepForTimeInterval:deltaTime];
     
-    //NSLog(@"过%f秒播放",deltaTime);
-    //NSLog(@"播放的数组%@",eventArray);
     
     [eventArray enumerateObjectsUsingBlock:^(ChunkEvent * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         //播放音乐的核心代码
         //播放音乐(一个事件一个事件地播放音乐)
         //不播放FF和F0开头事件的音乐
-    
          if (obj.eventStatus.length <= 2)
          {
              [self PlaySoundWithChunkEvent:obj];
