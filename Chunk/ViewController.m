@@ -47,6 +47,10 @@
 //定义一个数组记录一下MIDI文件中所有5103事件的数组
 @property (nonatomic,strong)NSArray<FF5103ChunkEvent *> *ff5103Array;
 
+//定义一个自子线程
+@property (nonatomic,strong)NSOperationQueue *queue;
+
+
 @end
 
 @implementation ViewController
@@ -63,6 +67,20 @@
     _sampler = [[MIDISampler alloc] init];
     
 }
+
+-(NSOperationQueue *)queue
+{
+    if (_queue == nil)
+    {
+        
+        _queue = [[NSOperationQueue alloc] init];
+        
+    }
+    
+    return _queue;
+}
+
+
 
 //设置界面布局
 -(void)setUpUI
@@ -146,22 +164,30 @@
     {
         [_playButton setTitle:@"暂停" forState:UIControlStateNormal];
         
-         dispatch_async(dispatch_get_global_queue(0, 0), ^{
-         
-         //播放音乐
-         [self PlayMIDIMultiTemp];
-         
-         });
+        
+        [self.queue addOperationWithBlock:^{
+           
+            //播放音乐的当前线程
+            NSLog(@"播放音乐的当前线程是%@",[NSThread currentThread]);
+            
+            //播放音乐
+            [self PlayMIDIMultiTemp];
+            
+        }];
+        
          
          //设置定时器
          _timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(labelUpdate) userInfo:nil repeats:YES];
         
     }
+    /*
     else
     {
          [_playButton setTitle:@"播放" forState:UIControlStateNormal];
+        
+         [self.timer invalidate];
     }
-    
+    */
     
     
 }
@@ -509,6 +535,9 @@
     }
     
         NSLog(@"播放结束");
+    
+    //通知主界面播放结束
+    
     
 }
 
