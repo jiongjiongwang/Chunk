@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4C39C0E31DB51FA400EB04A0 /* NSArray+Log.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C39C0E21DB51FA400EB04A0 /* NSArray+Log.m */; };
+		4CDF0B731DD2228700AA2874 /* PlayAndPauseMusic.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CDF0B721DD2228700AA2874 /* PlayAndPauseMusic.m */; };
 		FE3B0DC41DB0C6D300E36A80 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DC31DB0C6D300E36A80 /* main.m */; };
 		FE3B0DC71DB0C6D300E36A80 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DC61DB0C6D300E36A80 /* AppDelegate.m */; };
 		FE3B0DCF1DB0C6D300E36A80 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FE3B0DCE1DB0C6D300E36A80 /* Assets.xcassets */; };
@@ -53,6 +54,8 @@
 /* Begin PBXFileReference section */
 		4C39C0E11DB51FA400EB04A0 /* NSArray+Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Log.h"; sourceTree = "<group>"; };
 		4C39C0E21DB51FA400EB04A0 /* NSArray+Log.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Log.m"; sourceTree = "<group>"; };
+		4CDF0B711DD2228700AA2874 /* PlayAndPauseMusic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayAndPauseMusic.h; sourceTree = "<group>"; };
+		4CDF0B721DD2228700AA2874 /* PlayAndPauseMusic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayAndPauseMusic.m; sourceTree = "<group>"; };
 		FE3B0DBF1DB0C6D300E36A80 /* Chunk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chunk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE3B0DC31DB0C6D300E36A80 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		FE3B0DC51DB0C6D300E36A80 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -131,6 +134,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4CDF0B701DD2219100AA2874 /* NSOperation */ = {
+			isa = PBXGroup;
+			children = (
+				4CDF0B711DD2228700AA2874 /* PlayAndPauseMusic.h */,
+				4CDF0B721DD2228700AA2874 /* PlayAndPauseMusic.m */,
+			);
+			name = NSOperation;
+			sourceTree = "<group>";
+		};
 		FE3B0DB61DB0C6D300E36A80 = {
 			isa = PBXGroup;
 			children = (
@@ -154,6 +166,7 @@
 		FE3B0DC11DB0C6D300E36A80 /* Chunk */ = {
 			isa = PBXGroup;
 			children = (
+				4CDF0B701DD2219100AA2874 /* NSOperation */,
 				FE4BE6CA1DB88749001FB862 /* GS.sf2 */,
 				FE4BE6C71DB85BA5001FB862 /* Library */,
 				FE3B0DF51DB0C71000E36A80 /* ChunkHeader.h */,
@@ -410,6 +423,7 @@
 				FE6C9CD51DB9B5C000116563 /* MASConstraint.m in Sources */,
 				FE3B0DF71DB0C71000E36A80 /* ChunkHeader.m in Sources */,
 				4C39C0E31DB51FA400EB04A0 /* NSArray+Log.m in Sources */,
+				4CDF0B731DD2228700AA2874 /* PlayAndPauseMusic.m in Sources */,
 				FE6C9CDA1DB9B5C000116563 /* NSArray+MASAdditions.m in Sources */,
 				FE6C9CDB1DB9B5C000116563 /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
 				FE3B0DFD1DB0DA9800E36A80 /* ChunkEvent.m in Sources */,
