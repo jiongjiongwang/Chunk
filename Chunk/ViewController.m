@@ -14,7 +14,7 @@
 
 
 #warning 放到PCH文件中，给整个项目使用
-#define kFilePath "/Users/dn210/Desktop/Trateil.mid"
+#define kFilePath "/Users/dn210/Desktop/tu er qi jin xing qu.mid"
 
 
 @interface ViewController ()
