@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		4C39C0E31DB51FA400EB04A0 /* NSArray+Log.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C39C0E21DB51FA400EB04A0 /* NSArray+Log.m */; };
-		4CDF0B731DD2228700AA2874 /* PlayAndPauseMusic.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CDF0B721DD2228700AA2874 /* PlayAndPauseMusic.m */; };
+		FE0D26301DD2EACE0013D5C5 /* GS.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = FE0D262F1DD2EACE0013D5C5 /* GS.sf2 */; };
+		FE0D26331DD2FB780013D5C5 /* MIDISampler.m in Sources */ = {isa = PBXBuildFile; fileRef = FE0D26321DD2FB780013D5C5 /* MIDISampler.m */; };
 		FE3B0DC41DB0C6D300E36A80 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DC31DB0C6D300E36A80 /* main.m */; };
 		FE3B0DC71DB0C6D300E36A80 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DC61DB0C6D300E36A80 /* AppDelegate.m */; };
 		FE3B0DCF1DB0C6D300E36A80 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FE3B0DCE1DB0C6D300E36A80 /* Assets.xcassets */; };
@@ -18,8 +19,6 @@
 		FE3B0DFA1DB0C7A800E36A80 /* MTRKChunk.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DF91DB0C7A800E36A80 /* MTRKChunk.m */; };
 		FE3B0DFD1DB0DA9800E36A80 /* ChunkEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3B0DFC1DB0DA9800E36A80 /* ChunkEvent.m */; };
 		FE489A051DB744FB00C07F54 /* FF5103ChunkEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = FE489A041DB744FB00C07F54 /* FF5103ChunkEvent.m */; };
-		FE489A081DB794D000C07F54 /* MIDISampler.m in Sources */ = {isa = PBXBuildFile; fileRef = FE489A071DB794D000C07F54 /* MIDISampler.m */; };
-		FE4BE6CB1DB88749001FB862 /* GS.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = FE4BE6CA1DB88749001FB862 /* GS.sf2 */; };
 		FE559E171DC0BA5600C9CF13 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE559E161DC0BA5600C9CF13 /* ViewController.m */; };
 		FE6C9CD31DB9B5C000116563 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FE6C9CB91DB9B5C000116563 /* Info.plist */; };
 		FE6C9CD41DB9B5C000116563 /* MASCompositeConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = FE6C9CBB1DB9B5C000116563 /* MASCompositeConstraint.m */; };
@@ -32,6 +31,7 @@
 		FE6C9CDB1DB9B5C000116563 /* NSLayoutConstraint+MASDebugAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FE6C9CCD1DB9B5C000116563 /* NSLayoutConstraint+MASDebugAdditions.m */; };
 		FE6C9CDC1DB9B5C000116563 /* View+MASAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FE6C9CCF1DB9B5C000116563 /* View+MASAdditions.m */; };
 		FE6C9CDD1DB9B5C000116563 /* ViewController+MASAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FE6C9CD21DB9B5C000116563 /* ViewController+MASAdditions.m */; };
+		FEF94A8C1DD32986002DE7AF /* PlayMusic.m in Sources */ = {isa = PBXBuildFile; fileRef = FEF94A8B1DD32986002DE7AF /* PlayMusic.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,8 +54,9 @@
 /* Begin PBXFileReference section */
 		4C39C0E11DB51FA400EB04A0 /* NSArray+Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Log.h"; sourceTree = "<group>"; };
 		4C39C0E21DB51FA400EB04A0 /* NSArray+Log.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Log.m"; sourceTree = "<group>"; };
-		4CDF0B711DD2228700AA2874 /* PlayAndPauseMusic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayAndPauseMusic.h; sourceTree = "<group>"; };
-		4CDF0B721DD2228700AA2874 /* PlayAndPauseMusic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayAndPauseMusic.m; sourceTree = "<group>"; };
+		FE0D262F1DD2EACE0013D5C5 /* GS.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = GS.sf2; sourceTree = "<group>"; };
+		FE0D26311DD2FB780013D5C5 /* MIDISampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIDISampler.h; sourceTree = "<group>"; };
+		FE0D26321DD2FB780013D5C5 /* MIDISampler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIDISampler.m; sourceTree = "<group>"; };
 		FE3B0DBF1DB0C6D300E36A80 /* Chunk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chunk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE3B0DC31DB0C6D300E36A80 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		FE3B0DC51DB0C6D300E36A80 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -77,9 +78,6 @@
 		FE3B0DFC1DB0DA9800E36A80 /* ChunkEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChunkEvent.m; sourceTree = "<group>"; };
 		FE489A031DB744FB00C07F54 /* FF5103ChunkEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FF5103ChunkEvent.h; sourceTree = "<group>"; };
 		FE489A041DB744FB00C07F54 /* FF5103ChunkEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FF5103ChunkEvent.m; sourceTree = "<group>"; };
-		FE489A061DB794D000C07F54 /* MIDISampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIDISampler.h; sourceTree = "<group>"; };
-		FE489A071DB794D000C07F54 /* MIDISampler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MIDISampler.m; sourceTree = "<group>"; };
-		FE4BE6CA1DB88749001FB862 /* GS.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = GS.sf2; sourceTree = "<group>"; };
 		FE559E161DC0BA5600C9CF13 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		FE6C9CB91DB9B5C000116563 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FE6C9CBA1DB9B5C000116563 /* MASCompositeConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MASCompositeConstraint.h; sourceTree = "<group>"; };
@@ -107,6 +105,8 @@
 		FE6C9CD01DB9B5C000116563 /* View+MASShorthandAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "View+MASShorthandAdditions.h"; sourceTree = "<group>"; };
 		FE6C9CD11DB9B5C000116563 /* ViewController+MASAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ViewController+MASAdditions.h"; sourceTree = "<group>"; };
 		FE6C9CD21DB9B5C000116563 /* ViewController+MASAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ViewController+MASAdditions.m"; sourceTree = "<group>"; };
+		FEF94A8A1DD32986002DE7AF /* PlayMusic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayMusic.h; sourceTree = "<group>"; };
+		FEF94A8B1DD32986002DE7AF /* PlayMusic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayMusic.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,15 +134,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4CDF0B701DD2219100AA2874 /* NSOperation */ = {
-			isa = PBXGroup;
-			children = (
-				4CDF0B711DD2228700AA2874 /* PlayAndPauseMusic.h */,
-				4CDF0B721DD2228700AA2874 /* PlayAndPauseMusic.m */,
-			);
-			name = NSOperation;
-			sourceTree = "<group>";
-		};
 		FE3B0DB61DB0C6D300E36A80 = {
 			isa = PBXGroup;
 			children = (
@@ -166,8 +157,9 @@
 		FE3B0DC11DB0C6D300E36A80 /* Chunk */ = {
 			isa = PBXGroup;
 			children = (
-				4CDF0B701DD2219100AA2874 /* NSOperation */,
-				FE4BE6CA1DB88749001FB862 /* GS.sf2 */,
+				FE0D262F1DD2EACE0013D5C5 /* GS.sf2 */,
+				FEF94A8A1DD32986002DE7AF /* PlayMusic.h */,
+				FEF94A8B1DD32986002DE7AF /* PlayMusic.m */,
 				FE4BE6C71DB85BA5001FB862 /* Library */,
 				FE3B0DF51DB0C71000E36A80 /* ChunkHeader.h */,
 				FE3B0DF61DB0C71000E36A80 /* ChunkHeader.m */,
@@ -235,9 +227,9 @@
 		FE4BE6C71DB85BA5001FB862 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				FE0D26311DD2FB780013D5C5 /* MIDISampler.h */,
+				FE0D26321DD2FB780013D5C5 /* MIDISampler.m */,
 				FE6C9CB81DB9B5C000116563 /* Masonry */,
-				FE489A061DB794D000C07F54 /* MIDISampler.h */,
-				FE489A071DB794D000C07F54 /* MIDISampler.m */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -382,8 +374,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FE4BE6CB1DB88749001FB862 /* GS.sf2 in Resources */,
 				FE3B0DCF1DB0C6D300E36A80 /* Assets.xcassets in Resources */,
+				FE0D26301DD2EACE0013D5C5 /* GS.sf2 in Resources */,
 				FE6C9CD31DB9B5C000116563 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -411,7 +403,6 @@
 			files = (
 				FE6C9CD91DB9B5C000116563 /* MASViewConstraint.m in Sources */,
 				FE6C9CD81DB9B5C000116563 /* MASViewAttribute.m in Sources */,
-				FE489A081DB794D000C07F54 /* MIDISampler.m in Sources */,
 				FE3B0DFA1DB0C7A800E36A80 /* MTRKChunk.m in Sources */,
 				FE3B0DC71DB0C6D300E36A80 /* AppDelegate.m in Sources */,
 				FE6C9CD41DB9B5C000116563 /* MASCompositeConstraint.m in Sources */,
@@ -420,10 +411,11 @@
 				FE559E171DC0BA5600C9CF13 /* ViewController.m in Sources */,
 				FE6C9CD71DB9B5C000116563 /* MASLayoutConstraint.m in Sources */,
 				FE6C9CDD1DB9B5C000116563 /* ViewController+MASAdditions.m in Sources */,
+				FEF94A8C1DD32986002DE7AF /* PlayMusic.m in Sources */,
 				FE6C9CD51DB9B5C000116563 /* MASConstraint.m in Sources */,
+				FE0D26331DD2FB780013D5C5 /* MIDISampler.m in Sources */,
 				FE3B0DF71DB0C71000E36A80 /* ChunkHeader.m in Sources */,
 				4C39C0E31DB51FA400EB04A0 /* NSArray+Log.m in Sources */,
-				4CDF0B731DD2228700AA2874 /* PlayAndPauseMusic.m in Sources */,
 				FE6C9CDA1DB9B5C000116563 /* NSArray+MASAdditions.m in Sources */,
 				FE6C9CDB1DB9B5C000116563 /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
 				FE3B0DFD1DB0DA9800E36A80 /* ChunkEvent.m in Sources */,
@@ -560,7 +552,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Chunk/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Second.Chunk;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -573,7 +565,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Chunk/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Second.Chunk;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -22,9 +22,7 @@ char Drum_Banks[] = {0,8,16,24,25,30,32,40,48};
     [self stopAudioProcessingGraph];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:[UIApplication sharedApplication]];
-    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:[UIApplication sharedApplication]];
-    
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:AVAudioSessionInterruptionNotification object:[AVAudioSession sharedInstance]];
 #ifndef PP_ARC_ENABLED
