@@ -11,10 +11,13 @@
 #import "MTRKChunk.h"
 #import "Masonry.h"
 #import "FF5103ChunkEvent.h"
+#import "PlayAndPauseMusic.h"
 
 
 #warning 放到PCH文件中，给整个项目使用
+
 #define kFilePath "/Users/dn210/Desktop/tu er qi jin xing qu.mid"
+
 
 
 @interface ViewController ()
@@ -47,8 +50,12 @@
 //定义一个数组记录一下MIDI文件中所有5103事件的数组
 @property (nonatomic,strong)NSArray<FF5103ChunkEvent *> *ff5103Array;
 
-//定义一个自子线程
+//定义一个子线程队列
 @property (nonatomic,strong)NSOperationQueue *queue;
+
+//定义一个子线程
+@property (nonatomic,strong)PlayAndPauseMusic *playOrPause;
+
 
 
 @end
@@ -66,18 +73,29 @@
     //1-初始化
     _sampler = [[MIDISampler alloc] init];
     
+    
+    
+    
 }
 
 -(NSOperationQueue *)queue
 {
-    if (_queue == nil)
+    if (!_queue)
     {
-        
         _queue = [[NSOperationQueue alloc] init];
-        
     }
     
     return _queue;
+}
+
+-(PlayAndPauseMusic *)playOrPause
+{
+    if (!_playOrPause)
+    {
+        _playOrPause = [[PlayAndPauseMusic alloc] init];
+    }
+    
+    return _playOrPause;
 }
 
 
@@ -165,30 +183,37 @@
         [_playButton setTitle:@"暂停" forState:UIControlStateNormal];
         
         
+        
+        /*
         [self.queue addOperationWithBlock:^{
            
-            //播放音乐的当前线程
-            NSLog(@"播放音乐的当前线程是%@",[NSThread currentThread]);
-            
             //播放音乐
             [self PlayMIDIMultiTemp];
             
         }];
+        */
+        
+        self.playOrPause.playStr = @"播放音乐";
         
          
          //设置定时器
          _timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(labelUpdate) userInfo:nil repeats:YES];
         
     }
-    /*
     else
     {
          [_playButton setTitle:@"播放" forState:UIControlStateNormal];
         
+         self.playOrPause.playStr = @"暂停音乐";
+        
+        
+        
+        
+        
          [self.timer invalidate];
     }
-    */
     
+    [self.queue addOperation:self.playOrPause];
     
 }
 
