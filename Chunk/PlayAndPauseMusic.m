@@ -14,7 +14,22 @@
 
 -(void)main
 {
-    NSLog(@"当前线程为%@----->%@",[NSThread currentThread],self.playStr);
+    
+    int index = 0;
+    
+    //直到这首歌歌曲播放结束
+    while (index < 10000)
+    {
+        
+        if (_play)
+        {
+            NSLog(@"%d:当前线程为%@----->%@",index,[NSThread currentThread],self.playStr);
+            
+            [NSThread sleepForTimeInterval:0.2];
+            
+            index ++;
+        }
+    }
 }
 
 

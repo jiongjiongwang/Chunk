@@ -12,6 +12,9 @@
 
 @property (nonatomic,copy)NSString *playStr;
 
+//BOOL:播放/暂停音乐
+@property (nonatomic,assign)BOOL play;
+
 
 
 @end

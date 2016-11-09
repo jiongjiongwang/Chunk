@@ -16,7 +16,7 @@
 
 #warning 放到PCH文件中，给整个项目使用
 
-#define kFilePath "/Users/dn210/Desktop/tu er qi jin xing qu.mid"
+#define kFilePath "/Users/dn210/Desktop/马勒1-4.mid"
 
 
 
@@ -72,9 +72,6 @@
     
     //1-初始化
     _sampler = [[MIDISampler alloc] init];
-    
-    
-    
     
 }
 
@@ -182,20 +179,16 @@
     {
         [_playButton setTitle:@"暂停" forState:UIControlStateNormal];
         
-        
-        
-        /*
-        [self.queue addOperationWithBlock:^{
-           
-            //播放音乐
-            [self PlayMIDIMultiTemp];
-            
-        }];
-        */
-        
         self.playOrPause.playStr = @"播放音乐";
         
-         
+        self.playOrPause.play = YES;
+        
+        NSLog(@"%d",self.playOrPause.executing);
+        
+        if (!self.playOrPause.executing)
+        {
+           [self.queue addOperation:self.playOrPause];
+        }
          //设置定时器
          _timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(labelUpdate) userInfo:nil repeats:YES];
         
@@ -206,14 +199,13 @@
         
          self.playOrPause.playStr = @"暂停音乐";
         
-        
-        
+         self.playOrPause.play = NO;
         
         
          [self.timer invalidate];
     }
     
-    [self.queue addOperation:self.playOrPause];
+    
     
 }
 
