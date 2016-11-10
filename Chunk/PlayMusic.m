@@ -113,6 +113,10 @@
     //preLowEventTime初始为0
     preLowEventTime = lowEventTime;
     
+    //暂停次数
+    NSUInteger pauseNum = 0;
+    
+    NSLog(@"播放开始");
     
     for (NSUInteger k = 0; k < self.ff5103Array.count; k++)
     {
@@ -189,6 +193,9 @@
             endTime = self.ff5103Array[k+1].eventPlayTime;
         }
         
+        
+        
+        
 #warning 待封装
         while (lowEventTime < endTime)
         {
@@ -239,13 +246,36 @@
                 //生成事件数组
                 mEventArray = [self GetEventArrayWithTime:lowEventTime andIndexArray:chunkIndex andEndIndexArray:quartChunkIndex];
                 
+                NSLog(@"当前的播放时间是%f,前一个播放时间是%f,之间的差值为%f",lowEventTime,preLowEventTime,lowEventTime-preLowEventTime);
+                
+                
                 //播放0时间数组的事件
                 [self PlaySoundWithArray:mEventArray andDelayTime:lowEventTime - preLowEventTime];
                 
+                
+                
+                
+                
                 //更新数据
                 preLowEventTime = lowEventTime;
+                
+                pauseNum = 0;
+            }
+            else
+            {
+                pauseNum ++;
+                
+                if (pauseNum == 1)
+                {
+                    NSLog(@"播放暂停,播放数:%ld",pauseNum);
+                    
+                     [_sampler MIDIAllNotesOff];
+                }
             }
         }
+        
+        
+        NSLog(@"第%ld个区域播放完毕",k);
         
     }
     
@@ -320,12 +350,16 @@
 //封装一个方法:播放数组事件
 -(void)PlaySoundWithArray:(NSMutableArray<ChunkEvent *> *)eventArray andDelayTime:(float)deltaTime
 {
+    
     //NSLog(@"相隔时间=%f",deltaTime);
     
     [NSThread sleepForTimeInterval:deltaTime];
     
     //NSLog(@"开始播放当前数组");
     
+    
+    
+    /*
     [eventArray enumerateObjectsUsingBlock:^(ChunkEvent * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         //播放音乐的核心代码
         //播放音乐(一个事件一个事件地播放音乐)
@@ -337,7 +371,7 @@
             [self PlaySoundWithChunkEvent:obj];
         }
     }];
-    
+    */
     //NSLog(@"当前数组播放完毕");
 }
 

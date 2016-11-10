@@ -15,7 +15,7 @@
 #import "PlayMusic.h"
 
 
-#define kFilePath "/Users/dn210/Desktop/0GAROTADE.mid"
+#define kFilePath "/Users/dn210/Desktop/马勒1-4.mid"
 
 
 
@@ -172,23 +172,21 @@
 #warning 播放完毕之后_playTime置为0
         _playTime ++;
         
+        /*
         //当是第一次播放时
         if (_playTime == 1)
         {
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
                 
-                NSLog(@"当前线程为%@",[NSThread currentThread]);
-                
                 [_playMusic PlayMIDIMultiTemp];
                 
             });
         }
-        
-        
-        
+        */
+        [_playMusic PlayMIDIMultiTemp];
         
          //设置定时器
-         _timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(labelUpdate) userInfo:nil repeats:YES];
+         //_timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(labelUpdate) userInfo:nil repeats:YES];
         
     }
     else
