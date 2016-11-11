@@ -15,7 +15,7 @@
 #import "PlayMusic.h"
 
 
-#define kFilePath "/Users/dn210/Desktop/马勒1-4.mid"
+#define kFilePath "/Users/dn210/Desktop/Trateil.mid"
 
 
 
@@ -183,6 +183,8 @@
             });
         }
         */
+        
+        
         [_playMusic PlayMIDIMultiTemp];
         
          //设置定时器
