@@ -119,7 +119,7 @@
     //暂停次数
     NSUInteger pauseNum = 0;
     
-    NSLog(@"播放开始");
+    //NSLog(@"播放开始");
     
     for (NSUInteger k = 0; k < self.ff5103Array.count; k++)
     {
@@ -198,9 +198,35 @@
             endTime = self.ff5103Array[k+1].eventPlayTime;
         }
         
-        [self TimePaixuWithEndChunkArray:quartChunkIndex andEndTime:endTime];
+        struct node *t;
+        
+        t = [self TimePaixuWithEndChunkArray:quartChunkIndex andEndTime:endTime];
+        
+       // [self TimePaixuWithEndChunkArray:quartChunkIndex andEndTime:endTime];
         
         
+        NSLog(@"播放开始");
+        while (t != NULL)
+        {
+            allTimeNum ++;
+            
+            //NSLog(@"第%d个最小的总时间已经找到是%f,前一个最小时间是%f",allTimeNum,t->lowTime,t->preLowTime);
+            
+            
+            //生成事件数组
+#warning 3-生成事件数组的时间(暂时不可减去)
+            mEventArray = [self GetEventArrayWithTime:t->lowTime andIndexArray:chunkIndex andEndIndexArray:quartChunkIndex];
+            
+            
+            //播放音乐
+#warning 4-播放音乐的时间(不可减去)
+            [self PlaySoundWithArray:mEventArray andDelayTime:t->lowTime - t->preLowTime];
+            
+            
+            t = t -> next;
+        }
+        
+        NSLog(@"播放结束");
         
         //NSLog(@"播放开始");
         /*
@@ -297,12 +323,12 @@
         
     }
     
-    NSLog(@"播放结束");
+    //NSLog(@"播放结束");
 }
 
 
 //事件时间排序
--(void)TimePaixuWithEndChunkArray:(NSUInteger[])endChunkIndex andEndTime:(float)endTime
+-(struct node *)TimePaixuWithEndChunkArray:(NSUInteger[])endChunkIndex andEndTime:(float)endTime
 {
     
     //用一个数来得到最小的值
@@ -312,12 +338,8 @@
     float preLowEventTime;
     
     
-    
-    
-    //定义一个float数组
-    //float timeArray[100] = {0};
-    float *timeArray;
-    
+    //总共的时间数
+    int allTimeNum = 0;
     
     
     //定义另一个数组
@@ -332,8 +354,17 @@
     //preLowEventTime初始为0
     preLowEventTime = lowEventTime;
     
+    
+    struct node *head = NULL,*p,*q = NULL;
+    
+    
     while (lowEventTime < endTime)
     {
+        
+        p = (struct node *)malloc(sizeof(struct node));
+        
+        
+        
         //1-轨道要全部遍历结束
         for (NSUInteger i = 0; i < _chunkHead.chunkNum; i++)
         {
@@ -364,18 +395,46 @@
                     
                     chunkIndex[i] = j;
                     
+                    
                     break;
                 }
             }
             
         }
         
+        allTimeNum ++;
         
         
+        //NSLog(@"第%d个最小的总时间已经找到是%f",allTimeNum,lowEventTime);
         
+       // p = (struct node *)malloc(sizeof(struct node));
         
+        p->lowTime = lowEventTime;
         
+        p->preLowTime = preLowEventTime;
+        
+        p->next = NULL;
+        
+        if (head == NULL)
+        {
+            //如果这是第一个创建的结点，则将头指针指向这个结点
+            head = p;
+        }
+        else
+        {
+            //如果不是第一个创建的结点，则将上一个结点的后继指针指向当前结点
+            q->next = p;
+        }
+        
+        //指向q也指向当前结点
+        q=p;
+        
+        //更新数据
+        preLowEventTime = lowEventTime;
     }
+    
+    return head;
+    
 }
 
 
@@ -456,7 +515,6 @@
     //NSLog(@"开始播放当前数组");
     
     
-    /*
     [eventArray enumerateObjectsUsingBlock:^(ChunkEvent * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         //播放音乐的核心代码
         //播放音乐(一个事件一个事件地播放音乐)
@@ -468,7 +526,6 @@
             [self PlaySoundWithChunkEvent:obj];
         }
     }];
-    */
     //NSLog(@"当前数组播放完毕");
 }
 

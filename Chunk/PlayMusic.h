@@ -12,6 +12,17 @@
 #import "FF5103ChunkEvent.h"
 #import "MIDISampler.h"
 
+//创建一个结构体用来表示链表的结点类型
+struct node
+{
+    float lowTime;
+    
+    float preLowTime;
+    
+    struct node *next;
+};
+
+
 
 @interface PlayMusic : NSObject
 
