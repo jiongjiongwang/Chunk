@@ -34,6 +34,8 @@
 @property (nonatomic,strong)MIDISampler *sampler;
 
 
+
+
 @end
 
 
@@ -198,35 +200,68 @@
             endTime = self.ff5103Array[k+1].eventPlayTime;
         }
         
-        struct node *t;
         
-        t = [self TimePaixuWithEndChunkArray:quartChunkIndex andEndTime:endTime];
         
-       // [self TimePaixuWithEndChunkArray:quartChunkIndex andEndTime:endTime];
-        
+        //设置起点(默认为0)
+        float startIndex = 0;
+        //设置终点(默认为0.000001）
+        float endIndex = 0.000001;
         
         NSLog(@"播放开始");
-        while (t != NULL)
+        
+        
+        while (endIndex <= endTime)
         {
-            allTimeNum ++;
-            
-            //NSLog(@"第%d个最小的总时间已经找到是%f,前一个最小时间是%f",allTimeNum,t->lowTime,t->preLowTime);
-            
-            
-            //生成事件数组
-#warning 3-生成事件数组的时间(暂时不可减去)
-            mEventArray = [self GetEventArrayWithTime:t->lowTime andIndexArray:chunkIndex andEndIndexArray:quartChunkIndex];
-            
+            mEventArray = [self GetEventArrayWithTime:startIndex andendTime:endIndex andIndexArray:chunkIndex andEndIndexArray:quartChunkIndex];
             
             //播放音乐
 #warning 4-播放音乐的时间(不可减去)
-            [self PlaySoundWithArray:mEventArray andDelayTime:t->lowTime - t->preLowTime];
             
+            if (mEventArray.count >= 1)
+            {
+                
+               //取时间
+                ChunkEvent *event = (ChunkEvent *)mEventArray[0];
+                
+                float eventPlayTime = event.eventPlayTime;
+                
+                NSDateFormatter * formatter = [[NSDateFormatter alloc ] init];
+                [formatter setDateFormat:@"YYYY-MM-dd hh:mm:ss:SSSSSS"];
+                
+                
+                
+                NSString *startTime =  [formatter stringFromDate:[NSDate date]];
+                
+                NSLog(@"开始播放%f时的MIDI的时间是%@",eventPlayTime,startTime);
+                [self PlaySoundWithArray:mEventArray andDelayTime:0];
+                
+                NSString *endTime =  [formatter stringFromDate:[NSDate date]];
+                NSLog(@"结束播放%f时的MIDI的时间是%@",eventPlayTime,endTime);
+                
+                
+                
+                //[NSThread sleepForTimeInterval:endIndex - eventPlayTime];
+                
+            }
+            else
+            {
+                //[NSThread sleepForTimeInterval:0.001];
+            }
+        
+            startIndex += 0.001;
             
-            t = t -> next;
+            endIndex = startIndex + 0.001;
         }
         
+        
+        
+        
         NSLog(@"播放结束");
+        
+        
+        
+        
+        
         
         //NSLog(@"播放开始");
         /*
@@ -504,13 +539,77 @@
     return mEventArray;
 }
 
+//封装一个方法:传入一个范围，返回一个数组
+-(NSMutableArray<ChunkEvent *> *)GetEventArrayWithTime:(float)startTime andendTime:(float)endTime andIndexArray:(NSUInteger[])chunkIndex andEndIndexArray:(NSUInteger[])endChunkIndex
+{
+    
+    //用一个临时的可变数组来保存当前的事件
+    NSMutableArray<ChunkEvent *> *mEventArray = [NSMutableArray array];
+    
+    float tempTime = 0;
+    
+    int num = 0;
+    
+    static int allNum = 0;
+    
+    //1-轨道要全部遍历结束
+    for (NSUInteger i = 0; i < _chunkHead.chunkNum; i++)
+    {
+        //2-每一个轨道的事件不需要全部遍历
+        for (NSUInteger j = chunkIndex[i]; j < endChunkIndex[i]; j++)
+        {
+            ChunkEvent *chunkEvent = self.mtrkArray[i].chunkEventArray[j];
+            
+            if (chunkEvent.eventPlayTime > startTime && chunkEvent.eventPlayTime <= endTime)
+            {
+                 [mEventArray addObject:chunkEvent];
+                
+                if (tempTime == 0)
+                {
+                    //第一次赋值
+                    tempTime = chunkEvent.eventPlayTime;
+                    
+                    num ++;
+                    
+                    allNum ++;
+                }
+                else
+                {
+                    //已经把第一个值赋值了
+                    if (tempTime != chunkEvent.eventPlayTime)
+                    {
+                        num ++;
+                    }
+                }
+                
+                
+                //NSLog(@"在%f到%f的范围内的时间是%f,此时间总数为%d,最小时间编号为%d",startTime,endTime,chunkEvent.eventPlayTime,num,allNum);
+                
+                chunkIndex[i] = j;
+                
+                break;
+            }
+            else if(chunkEvent.eventPlayTime > endTime)
+            {
+                chunkIndex[i] = j;
+                
+                break;
+            }
+            
+        }
+    }
+    
+    return mEventArray;
+}
+
+//仅仅是放
 //封装一个方法:播放数组事件
 -(void)PlaySoundWithArray:(NSMutableArray<ChunkEvent *> *)eventArray andDelayTime:(float)deltaTime
 {
     
     //NSLog(@"相隔时间=%f",deltaTime);
     
-    [NSThread sleepForTimeInterval:deltaTime];
+    //[NSThread sleepForTimeInterval:deltaTime];
     
     //NSLog(@"开始播放当前数组");
     
