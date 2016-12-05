@@ -150,11 +150,11 @@
 -(void)labelUpdate
 {
     //1-取label上的数字
-    NSInteger num = [self.timeLabel.text integerValue];
+    float num = [self.timeLabel.text floatValue];
     
-    num ++;
+    num+= 0.001;
     
-    self.timeLabel.text = [NSString stringWithFormat:@"%ld",(long)num];
+    self.timeLabel.text = [NSString stringWithFormat:@"%f",num];
     
 }
 
@@ -184,11 +184,12 @@
         }
         */
         
+        //设置定时器
+        //_timer = [NSTimer scheduledTimerWithTimeInterval:0.001 target:self selector:@selector(labelUpdate) userInfo:nil repeats:YES];
         
-        [_playMusic PlayMIDIMultiTemp];
         
-         //设置定时器
-         //_timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(labelUpdate) userInfo:nil repeats:YES];
+        [_playMusic PlayMIDIMultiTempMusic];
+        
         
     }
     else
