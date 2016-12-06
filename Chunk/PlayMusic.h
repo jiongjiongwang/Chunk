@@ -17,7 +17,7 @@ struct node
 {
     float lowTime;
     
-    float preLowTime;
+   // float preLowTime;
     
     struct node *next;
 };
