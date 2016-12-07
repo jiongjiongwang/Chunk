@@ -220,13 +220,12 @@
     }
   */
     
-    /*
+    
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         
     
         NSMutableArray *mEventArray;
         
-#warning 暂时没有作用
         NSUInteger quartChunkIndex[_chunkHead.chunkNum];
         
         memset(quartChunkIndex, 0, sizeof(quartChunkIndex));
@@ -252,12 +251,11 @@
     
     
     });
-    */
     
     
+    /*
     NSMutableArray *mEventArray;
     
-#warning 暂时没有作用
     NSUInteger quartChunkIndex[_chunkHead.chunkNum];
     
     memset(quartChunkIndex, 0, sizeof(quartChunkIndex));
@@ -270,25 +268,11 @@
     if (mEventArray.count >= 1)
     {
         
-        /*
-        //取时间
-        ChunkEvent *event = (ChunkEvent *)mEventArray[0];
-        
-        float eventPlayTime = event.eventPlayTime;
-        
-        if (_clock >=3.7 && _clock <= 5)
-        {
-            NSLog(@"开始播放%f时的MIDI,所在范围是%f到%f之间",eventPlayTime,_clock,_clock+0.001);
-            
-            NSLog(@"事件数组为:%@",mEventArray);
-        }
-        */
-        
         //播放音乐
         [self PlaySoundWithArray:mEventArray andDelayTime:0];
 
     }
-    
+    */
      
     _clock += 0.001;
 }
@@ -744,8 +728,6 @@
                 */
                 
                 chunkIndex[i] = @(j);
-                
-                //break;
             }
             else if(chunkEvent.eventPlayTime >= endTime)
             {
