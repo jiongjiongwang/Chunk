@@ -12,16 +12,6 @@
 #import "FF5103ChunkEvent.h"
 #import "MIDISampler.h"
 
-//创建一个结构体用来表示链表的结点类型
-struct node
-{
-    float lowTime;
-    
-   // float preLowTime;
-    
-    struct node *next;
-};
-
 
 
 @interface PlayMusic : NSObject
@@ -30,9 +20,6 @@ struct node
 +(instancetype)PlayMusicWithChunkHead:(ChunkHeader *)chunkHead andff5103Array:(NSArray<FF5103ChunkEvent *> *)ff5103Array andMTRKArray:(NSArray<MTRKChunk *> *)mtrkArray
                                andMidiAllTime:(float)midiAllTime
                                   andMidiData:(NSData *)midiData;
-
--(void)PlayMIDIMultiTemp;
-
 
 -(void)PlayMIDIMultiTempMusic;
 

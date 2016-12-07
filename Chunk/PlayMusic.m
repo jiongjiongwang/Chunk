@@ -34,24 +34,19 @@
 @property (nonatomic,strong)MIDISampler *sampler;
 
 
-
-
-//时间链表
-@property (nonatomic,assign)struct node *theTimeHead;
-
-//记录起点的链表指针
-@property (nonatomic,assign)struct node *startIndexHead;
-
 @property (nonatomic,strong)NSTimer *timer;
 
 @property (nonatomic,assign)float clock;
+
+//是否开始播放
+@property (nonatomic,assign)BOOL isPlay;
 
 
 //轨道索引数组
 @property (nonatomic,strong)NSMutableArray<NSNumber *> *chunkIndexArray;
 
-
-
+//播放开始的时刻
+@property (nonatomic,strong)NSDate *startTime;
 
 @end
 
@@ -115,24 +110,10 @@
 -(void)PlayMIDIMultiTempMusic
 {
     
-    //得出时间链表
-    //假设所有事件的发生时间都已经确定了
-    [self PlayMIDIMultiTemp];
+    //求出每一个事件的时间
+    [self CaculateTheEventTime];
     
-    /*
-    while (_theTimeHead != NULL)
-    {
-        NSLog(@"%f",_theTimeHead->lowTime);
-        
-        _theTimeHead = _theTimeHead -> next;
-    }
-    */
-     
-    
-    _startIndexHead = _theTimeHead;
-    
-    
-    
+    _isPlay = NO;
     
     _timer = [NSTimer scheduledTimerWithTimeInterval:0.001 target:self selector:@selector(TimeGo) userInfo:nil repeats:YES];
     
@@ -140,167 +121,79 @@
 
 -(void)TimeGo
 {
-    if (_clock == 0)
+    /*
+     if (_clock > self.midiAllTime)
+     {
+     NSLog(@"结束播放:%f",self.midiAllTime);
+     
+     [_timer invalidate];
+     
+     return;
+     }
+     */
+    
+    //时刻之间的差值
+    NSTimeInterval secondsInterval = 0;
+    
+    if (_isPlay == NO)
     {
-        NSLog(@"开始播放:%f",_clock);
+        //开始的时刻
+        _startTime = [NSDate date];
+        NSLog(@"开始播放");
+    }
+    else
+    {
+        //记录一下当前的时刻
+        NSDate *nowTime = [NSDate date];
+        
+        //时刻之间相减
+        secondsInterval= [nowTime timeIntervalSinceDate:_startTime];
     }
     
-    
-    if (_clock >= self.midiAllTime)
+    //时刻之间差值
+    //NSLog(@"secondsInterval=  %0.3f",secondsInterval);
+    //当在这个时间差时
+    if (secondsInterval > self.midiAllTime)
     {
-        NSLog(@"结束播放:%f",self.midiAllTime);
-        
         [_timer invalidate];
         
-        NSLog(@"%f",_clock);
+        _timer = nil;
+        
+        NSLog(@"播放结束%f",secondsInterval);
         
         return;
     }
     
-    /*
-    if (_clock > 5)
-    {
-        NSLog(@"暂停播放");
-    }
-    */
-
-    
-     /*
-     struct node *head;
-     
-     head = _startIndexHead;
-     
-     
-    while (head != NULL)
-    {
-        
-        if (head->lowTime - _clock < 0.001 && head->lowTime - _clock > 0)
-        {
-            
-            //播放音乐
-     
-     
-            
-            NSMutableArray *mEventArray;
-            
-            #warning 暂时没有作用
-            NSUInteger quartChunkIndex[_chunkHead.chunkNum];
-            
-            memset(quartChunkIndex, 0, sizeof(quartChunkIndex));
-            
-            //生成事件数组
-            //传入一个基准数,返回一个事件数组
-            mEventArray = [self GetEventArrayWithTime:head->lowTime andIndexArray:self.chunkIndexArray andEndIndexArray:quartChunkIndex];
-            
-            if (_clock >=3.7 && _clock <= 5)
-            {
-                NSLog(@"开始播放%f时的MIDI,所在范围是%f到%f之间",head->lowTime,_clock,_clock+0.001);
-                
-                NSLog(@"事件数组为:%@",mEventArray);
-            }
-            
-            
-            
-            //播放音乐
-            [self PlaySoundWithArray:mEventArray andDelayTime:0];
-            
-            
-            _startIndexHead = head;
-            
-            
-            break;
-        }
-        else if (head->lowTime - (_clock + 0.001) >= 0)
-        {
-            break;
-        }
-        
-        
-        head = head -> next;
-    }
-  */
-    
-    /*
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        
-    
-        NSMutableArray *mEventArray;
-        
-#warning 暂时没有作用
-        NSUInteger quartChunkIndex[_chunkHead.chunkNum];
-        
-        memset(quartChunkIndex, 0, sizeof(quartChunkIndex));
-        
-        
-        //生成事件数组
-        //传入一个事件范围,返回一个事件数组
-        mEventArray = [self GetEventArrayWithTime:_clock andendTime:_clock+0.001 andIndexArray:self.chunkIndexArray andEndIndexArray:quartChunkIndex];
-        
-        if (mEventArray.count >= 1)
-        {
-            
-            //取时间
-            //ChunkEvent *event = (ChunkEvent *)mEventArray[0];
-            
-            //float eventPlayTime = event.eventPlayTime;
-            //NSLog(@"开始播放%f时的MIDI,所在范围是%f到%f之间",eventPlayTime,_clock,_clock+0.001);
-            
-            //播放音乐
-            [self PlaySoundWithArray:mEventArray andDelayTime:0];
-            
-        }
-    
-    
-    });
-    */
-    
     
     NSMutableArray *mEventArray;
     
-#warning 暂时没有作用
     NSUInteger quartChunkIndex[_chunkHead.chunkNum];
     
     memset(quartChunkIndex, 0, sizeof(quartChunkIndex));
     
     
+    //mEventArray = [self GetEventArrayWithTime:_clock andendTime:_clock+0.001 andIndexArray:self.chunkIndexArray andEndIndexArray:quartChunkIndex];
+    
     //生成事件数组
     //传入一个事件范围,返回一个事件数组
-    mEventArray = [self GetEventArrayWithTime:_clock andendTime:_clock+0.001 andIndexArray:self.chunkIndexArray andEndIndexArray:quartChunkIndex];
+    mEventArray = [self GetEventArrayWithTime:secondsInterval andendTime:secondsInterval+0.001 andIndexArray:self.chunkIndexArray andEndIndexArray:quartChunkIndex];
     
     if (mEventArray.count >= 1)
     {
-        
-        /*
-        //取时间
-        ChunkEvent *event = (ChunkEvent *)mEventArray[0];
-        
-        float eventPlayTime = event.eventPlayTime;
-        
-        if (_clock >=3.7 && _clock <= 5)
-        {
-            NSLog(@"开始播放%f时的MIDI,所在范围是%f到%f之间",eventPlayTime,_clock,_clock+0.001);
-            
-            NSLog(@"事件数组为:%@",mEventArray);
-        }
-        */
-        
         //播放音乐
         [self PlaySoundWithArray:mEventArray andDelayTime:0];
-
     }
     
-     
-    _clock += 0.001;
+    _isPlay = YES;
+    
+    //_clock += 0.001;
 }
 
 
 
 
--(void)PlayMIDIMultiTemp
+-(void)CaculateTheEventTime
 {
-    
-    struct node *head = NULL,*p,*q = NULL;
-    
     
     //用一个数来得到最小的值
     float lowEventTime = 0.0000000;
@@ -320,7 +213,6 @@
     NSUInteger quartChunkIndex[_chunkHead.chunkNum];
     
     memset(quartChunkIndex, 0, sizeof(quartChunkIndex));
-    
     
     
     
@@ -346,9 +238,7 @@
     //暂停次数
     //NSUInteger pauseNum = 0;
     
-    //NSLog(@"播放开始");
     
-    NSLog(@"开始计算每一个事件的所在时间");
     for (NSUInteger k = 0; k < self.ff5103Array.count; k++)
     {
         
@@ -408,278 +298,8 @@
                 }
             }
         }
-        
-        
-        
-        /*
-        float endTime = 0.000000;
-        
-        //5103数组最后一个或当前MIDI文件只有一个5103
-        if (k == self.ff5103Array.count -1)
-        {
-            endTime = self.midiAllTime;
-        }
-        else
-        {
-            endTime = self.ff5103Array[k+1].eventPlayTime;
-        }
-        
-        
-        
-        //设置起点(默认为0)
-        float startIndex = 0;
-        //设置终点(默认为0.000001）
-        float endIndex = 0.001;
-        
-        NSMutableArray *mEventArray;
-        
-        
-        while (endIndex <= endTime)
-        {
-            //mEventArray = [self GetEventArrayWithTime:startIndex andendTime:endIndex andIndexArray:self.chunkIndexArray andEndIndexArray:quartChunkIndex];
-            
-            mEventArray = [self GetEventArrayWithTime:startIndex andendTime:endIndex andIndexArray:chunkIndex andEndIndexArray:quartChunkIndex];
-            
-            
-            
-            if (mEventArray.count >= 1)
-            {
-                
-               //取时间
-                ChunkEvent *event = (ChunkEvent *)mEventArray[0];
-                
-                float eventPlayTime = event.eventPlayTime;
-                //NSLog(@"开始播放%f时的MIDI,所在范围是%f到%f之间",eventPlayTime,startIndex,endIndex);
-                
-                
-                p = (struct node *)malloc(sizeof(struct node));
-                
-                p->lowTime = eventPlayTime;
-                
-                p->next = NULL;
-                
-                
-                
-                if (head == NULL)
-                {
-                    //如果这是第一个创建的结点，则将头指针指向这个结点
-                    head = p;
-                }
-                else
-                {
-                    //如果不是第一个创建的结点，则将上一个结点的后继指针指向当前结点
-                    q->next = p;
-                }
-                
-                //指向q也指向当前结点
-                q=p;
-                
-            }
-            else
-            {
-               
-            }
-        
-            startIndex += 0.001;
-            
-            endIndex = startIndex + 0.001;
-        }
-        */
-        
     }
-    NSLog(@"每一个事件的时间计算结束");
-    
-    
-    _theTimeHead = head;
-    
-    //NSLog(@"播放结束");
-}
 
-
-
-
-
-
-//事件时间排序
--(struct node *)TimePaixuWithEndChunkArray:(NSUInteger[])endChunkIndex andEndTime:(float)endTime
-{
-    
-    //用一个数来得到最小的值
-    float lowEventTime = 0.0000000;
-    
-    //记录一下前一个得到的最小值
-    float preLowEventTime;
-    
-    
-    //总共的时间数
-    int allTimeNum = 0;
-    
-    
-    //定义另一个数组
-    //定义一个数组来记录一下每一轨道的索引信息
-    //起点
-    NSUInteger chunkIndex[_chunkHead.chunkNum];
-    
-    
-    memset(chunkIndex, 0, sizeof(chunkIndex));
-    
-    
-    //preLowEventTime初始为0
-    preLowEventTime = lowEventTime;
-    
-    
-    struct node *head = NULL,*p,*q = NULL;
-    
-    
-    while (lowEventTime < endTime)
-    {
-        
-        p = (struct node *)malloc(sizeof(struct node));
-        
-        
-        
-        //1-轨道要全部遍历结束
-        for (NSUInteger i = 0; i < _chunkHead.chunkNum; i++)
-        {
-            //2-每一个轨道的事件不需要全部遍历
-            for (NSUInteger j = chunkIndex[i]; j < endChunkIndex[i]; j++)
-            {
-                ChunkEvent *chunkEvent = self.mtrkArray[i].chunkEventArray[j];
-                
-                if (chunkEvent.eventPlayTime > preLowEventTime)
-                {
-                    //说明已经更新过一次了
-                    if (lowEventTime > preLowEventTime)
-                    {
-                        
-                        //若发现比当前的"最小值"更小的，则更新为更小的那一个
-                        if (lowEventTime >= chunkEvent.eventPlayTime)
-                        {
-                            lowEventTime = chunkEvent.eventPlayTime;
-                        }
-                        
-                        
-                    }
-                    //第一次更新(默认取第一个轨道中大于preLowEventTime的数)
-                    else
-                    {
-                        lowEventTime = chunkEvent.eventPlayTime;
-                    }
-                    
-                    chunkIndex[i] = j;
-                    
-                    
-                    break;
-                }
-            }
-            
-        }
-        
-        allTimeNum ++;
-        
-        
-        //NSLog(@"第%d个最小的总时间已经找到是%f",allTimeNum,lowEventTime);
-        
-       // p = (struct node *)malloc(sizeof(struct node));
-        
-        p->lowTime = lowEventTime;
-        
-        //p->preLowTime = preLowEventTime;
-        
-        p->next = NULL;
-        
-        if (head == NULL)
-        {
-            //如果这是第一个创建的结点，则将头指针指向这个结点
-            head = p;
-        }
-        else
-        {
-            //如果不是第一个创建的结点，则将上一个结点的后继指针指向当前结点
-            q->next = p;
-        }
-        
-        //指向q也指向当前结点
-        q=p;
-        
-        //更新数据
-        preLowEventTime = lowEventTime;
-    }
-    
-    return head;
-    
-}
-
-
-
-//封装一个方法:传入一个基准数,返回一个事件数组
--(NSMutableArray<ChunkEvent *> *)GetEventArrayWithTime:(float)lowTime andIndexArray:(NSMutableArray *)chunkIndex andEndIndexArray:(NSUInteger[])endChunkIndex
-{
-    //用一个临时的可变数组来保存当前的事件
-    NSMutableArray<ChunkEvent *> *mEventArray = [NSMutableArray array];
-    
-    
-    //1-轨道要全部遍历结束
-    for (NSUInteger i = 0; i < _chunkHead.chunkNum; i++)
-    {
-        
-        //根据传入的lowTime设置不同的终点
-        NSUInteger endIndex;
-        
-        /*
-        if (lowTime == 0.0000000000)
-        {
-            endIndex = self.mtrkArray[i].chunkEventArray.count;
-        }
-        else
-        {
-            endIndex = endChunkIndex[i];
-        }
-        */
-        
-        endIndex = self.mtrkArray[i].chunkEventArray.count;
-        
-        //遍历轨道的每一个事件或每一个轨道的事件不需要全部遍历
-        for (NSUInteger j = [chunkIndex[i] integerValue]; j < endIndex; j++)
-        {
-            ChunkEvent *chunkEvent = self.mtrkArray[i].chunkEventArray[j];
-            
-            
-            if (lowTime == 0.0000000000)
-            {
-                //根据最小值基准数来遍历
-                if(chunkEvent.eventAllDeltaTime == 0)
-                {
-                    [mEventArray addObject:chunkEvent];
-                }
-                else
-                {
-                    break;
-                }
-            }
-            else
-            {
-                //根据最小值基准数来遍历
-                if (chunkEvent.eventPlayTime < lowTime)
-                {
-                    continue;
-                }
-                else if(chunkEvent.eventPlayTime == lowTime)
-                {
-                    [mEventArray addObject:chunkEvent];
-                    
-                    chunkIndex[i] = @(j);
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-        
-    }
-    
-    return mEventArray;
 }
 
 
@@ -687,7 +307,6 @@
 
 //封装一个方法:传入一个范围，返回一个数组
 -(NSMutableArray<ChunkEvent *> *)GetEventArrayWithTime:(float)startTime andendTime:(float)endTime andIndexArray:(NSMutableArray *)chunkIndex andEndIndexArray:(NSUInteger[])endChunkIndex
-//-(NSMutableArray<ChunkEvent *> *)GetEventArrayWithTime:(float)startTime andendTime:(float)endTime andIndexArray:(NSUInteger[])chunkIndex andEndIndexArray:(NSUInteger[])endChunkIndex
 {
     
     //用一个临时的可变数组来保存当前的事件
@@ -723,29 +342,7 @@
             {
                  [mEventArray addObject:chunkEvent];
                 
-                /*
-                if (tempTime == 0)
-                {
-                    //第一次赋值
-                    tempTime = chunkEvent.eventPlayTime;
-                    
-                    num ++;
-                    
-                    allNum ++;
-                }
-                else
-                {
-                    //已经把第一个值赋值了
-                    if (tempTime != chunkEvent.eventPlayTime)
-                    {
-                        num ++;
-                    }
-                }
-                */
-                
                 chunkIndex[i] = @(j);
-                
-                //break;
             }
             else if(chunkEvent.eventPlayTime >= endTime)
             {
@@ -764,22 +361,6 @@
 //封装一个方法:播放数组事件
 -(void)PlaySoundWithArray:(NSMutableArray<ChunkEvent *> *)eventArray andDelayTime:(float)deltaTime
 {
-    
-    //NSLog(@"相隔时间=%f",deltaTime);
-    //[NSThread sleepForTimeInterval:deltaTime];
-    
-    
-    //NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    //[dateFormatter setDateFormat:@"HH:mm:ss:SSS"];
-    
-    
-    //NSString *startDateStr = [dateFormatter stringFromDate:[NSDate date]];
-    //NSLog(@"开始播放当前数组,当前的时间是%@",startDateStr);
-    
-    //float startValue = [startDateStr floatValue];
-    
-    
-    
     [eventArray enumerateObjectsUsingBlock:^(ChunkEvent * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         //播放音乐的核心代码
         //播放音乐(一个事件一个事件地播放音乐)
@@ -791,17 +372,6 @@
             [self PlaySoundWithChunkEvent:obj];
         }
     }];
-    
-    //NSString *endDateStr = [dateFormatter stringFromDate:[NSDate date]];
-    //NSLog(@"当前数组播放完毕,当前的时间是%@",endDateStr);
-    
-    /*
-    if ([startDateStr isEqualToString:endDateStr])
-    {
-        NSLog(@"播放音乐在0.001秒内完成");
-    }
-    */
-    
 }
 
 
