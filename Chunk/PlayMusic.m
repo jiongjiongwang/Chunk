@@ -36,7 +36,6 @@
 
 @property (nonatomic,strong)NSTimer *timer;
 
-@property (nonatomic,assign)float clock;
 
 //是否开始播放
 @property (nonatomic,assign)BOOL isPlay;
@@ -121,16 +120,6 @@
 
 -(void)TimeGo
 {
-    /*
-     if (_clock > self.midiAllTime)
-     {
-     NSLog(@"结束播放:%f",self.midiAllTime);
-     
-     [_timer invalidate];
-     
-     return;
-     }
-     */
     
     //时刻之间的差值
     NSTimeInterval secondsInterval = 0;
@@ -167,16 +156,9 @@
     
     NSMutableArray *mEventArray;
     
-    NSUInteger quartChunkIndex[_chunkHead.chunkNum];
-    
-    memset(quartChunkIndex, 0, sizeof(quartChunkIndex));
-    
-    
-    //mEventArray = [self GetEventArrayWithTime:_clock andendTime:_clock+0.001 andIndexArray:self.chunkIndexArray andEndIndexArray:quartChunkIndex];
-    
     //生成事件数组
     //传入一个事件范围,返回一个事件数组
-    mEventArray = [self GetEventArrayWithTime:secondsInterval andendTime:secondsInterval+0.001 andIndexArray:self.chunkIndexArray andEndIndexArray:quartChunkIndex];
+    mEventArray = [self GetEventArrayWithTime:secondsInterval andendTime:secondsInterval+0.001 andIndexArray:self.chunkIndexArray];
     
     if (mEventArray.count >= 1)
     {
@@ -186,7 +168,6 @@
     
     _isPlay = YES;
     
-    //_clock += 0.001;
 }
 
 
@@ -194,18 +175,6 @@
 
 -(void)CaculateTheEventTime
 {
-    
-    //用一个数来得到最小的值
-    float lowEventTime = 0.0000000;
-    
-    //记录一下前一个得到的最小值
-    float preLowEventTime;
-    
-    
-    
-    //总共的时间数
-    int allTimeNum = 0;
-    
     
     //定义一个数组来记录一下每一轨道的索引信息(4分音符范围的数组)
     //所在4分音符的终点
@@ -215,25 +184,7 @@
     memset(quartChunkIndex, 0, sizeof(quartChunkIndex));
     
     
-    
-    //定义另一个数组
-    //定义一个数组来记录一下每一轨道的索引信息
-    //起点
-    NSUInteger chunkIndex[_chunkHead.chunkNum];
-    
-    
-    memset(chunkIndex, 0, sizeof(chunkIndex));
-    
-    
-    allTimeNum ++;
-    
-    //mEventArray = [self GetEventArrayWithTime:lowEventTime andIndexArray:chunkIndex andEndIndexArray:quartChunkIndex];
-    
-    //播放0时间数组的事件
-    //[self PlaySoundWithArray:mEventArray andDelayTime:0.000000];
-    
-    //preLowEventTime初始为0
-    preLowEventTime = lowEventTime;
+
     
     //暂停次数
     //NSUInteger pauseNum = 0;
@@ -306,7 +257,7 @@
 
 
 //封装一个方法:传入一个范围，返回一个数组
--(NSMutableArray<ChunkEvent *> *)GetEventArrayWithTime:(float)startTime andendTime:(float)endTime andIndexArray:(NSMutableArray *)chunkIndex andEndIndexArray:(NSUInteger[])endChunkIndex
+-(NSMutableArray<ChunkEvent *> *)GetEventArrayWithTime:(float)startTime andendTime:(float)endTime andIndexArray:(NSMutableArray *)chunkIndex
 {
     
     //用一个临时的可变数组来保存当前的事件
@@ -320,17 +271,6 @@
         //根据传入的lowTime设置不同的终点
         NSUInteger endIndex;
         
-        /*
-         if (lowTime == 0.0000000000)
-         {
-         endIndex = self.mtrkArray[i].chunkEventArray.count;
-         }
-         else
-         {
-         endIndex = endChunkIndex[i];
-         }
-         */
-        
         endIndex = self.mtrkArray[i].chunkEventArray.count;
         
         //2-每一个轨道的事件不需要全部遍历
@@ -338,7 +278,9 @@
         {
             ChunkEvent *chunkEvent = self.mtrkArray[i].chunkEventArray[j];
             
-            if (chunkEvent.eventPlayTime > startTime && chunkEvent.eventPlayTime < endTime)
+            
+            
+            if (chunkEvent.eventPlayTime >= startTime && chunkEvent.eventPlayTime < endTime)
             {
                  [mEventArray addObject:chunkEvent];
                 
