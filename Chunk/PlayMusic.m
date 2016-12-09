@@ -163,7 +163,7 @@
         
         //生成事件数组
         //传入一个事件范围,返回一个事件数组
-        mEventArray = [self GetEventArrayWithTime:_clock andendTime:_clock+0.001 andIndexArray:self.chunkIndexArray];
+        mEventArray = [self GetEventArrayWithTime:secondsInterval andendTime:secondsInterval+0.001 andIndexArray:self.chunkIndexArray];
         
         if (mEventArray.count >= 1)
         {
@@ -316,6 +316,26 @@
         if (obj.eventStatus.length <= 2)
         {
             //NSLog(@"%@",obj);
+            
+            //NSLog(@"事件状态码是:%@",obj.eventStatus);
+            
+            NSString *firstStatus = [obj.eventStatus substringToIndex:1];
+            
+            if ([firstStatus isEqualToString:@"8"])
+            {
+                NSLog(@"释放键盘");
+            }
+            else if ([firstStatus isEqualToString:@"9"])
+            {
+                NSLog(@"按下键盘");
+            }
+            else if ([firstStatus isEqualToString:@"a"])
+            {
+                NSLog(@"触摸键盘以后");
+            }
+            
+            //NSLog(@"事件状态码首个字符:%@",firstStatus);
+            
             
             [self PlaySoundWithChunkEvent:obj];
         }
