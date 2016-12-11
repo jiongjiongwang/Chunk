@@ -15,7 +15,7 @@
 #import "PlayMusic.h"
 
 
-#define kFilePath "/Users/wangjiong/Desktop/马勒1-4.mid"
+#define kFilePath "/Users/wangjiong/Desktop/Trateil.mid"
 
 
 

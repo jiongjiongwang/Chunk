@@ -163,7 +163,7 @@
         
         //生成事件数组
         //传入一个事件范围,返回一个事件数组
-        mEventArray = [self GetEventArrayWithTime:_clock andendTime:_clock+0.001 andIndexArray:self.chunkIndexArray];
+        mEventArray = [self GetEventArrayWithTime:secondsInterval andendTime:secondsInterval+0.001 andIndexArray:self.chunkIndexArray];
         
         if (mEventArray.count >= 1)
         {
