@@ -106,10 +106,8 @@ unsigned long changeReadVarLen(unsigned long firstValue,unsigned long secondValu
 
 -(NSString *)description
 {
-    
-    //return [NSString stringWithFormat:@"当前事件状态码是%@,事件长度是%ld,事件位置在%ld,当前事件的delta-time位数是%ld,当前事件的delta-time是%ld,当前事件的即时总delta-time是%ld,当前事件是缺失事件%d",self.eventStatus,self.eventLength,self.location,self.deltaTimeLength,self.eventDeltaTime,self.eventAllDeltaTime,self.isUnFormal];
-    
-    return [NSString stringWithFormat:@"当前事件状态码是%@,事件长度是%ld,事件位置在%ld,当前事件的delta-time位数是%ld,当前事件的delta-time是%ld,当前事件的即时总delta-time是%ld,当前事件是缺失事件%d",self.eventStatus,self.eventLength,self.location,self.deltaTimeLength,self.eventDeltaTime,self.eventAllDeltaTime,self.isUnFormal];    
+
+    return [NSString stringWithFormat:@"当前事件状态码是%@,事件长度是%ld,事件位置在%ld,当前事件的delta-time位数是%ld,当前事件的delta-time是%ld,当前事件的即时总delta-time是%ld,当前事件是缺失事件%d",self.eventStatus,self.eventLength,self.location,self.deltaTimeLength,self.eventDeltaTime,self.eventAllDeltaTime,self.isUnFormal];
 }
 
 

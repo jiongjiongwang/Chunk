@@ -317,6 +317,26 @@
         {
             //NSLog(@"%@",obj);
             
+            //NSLog(@"事件状态码是:%@",obj.eventStatus);
+            
+            NSString *firstStatus = [obj.eventStatus substringToIndex:1];
+            
+            if ([firstStatus isEqualToString:@"8"])
+            {
+                NSLog(@"释放键盘");
+            }
+            else if ([firstStatus isEqualToString:@"9"])
+            {
+                NSLog(@"按下键盘");
+            }
+            else if ([firstStatus isEqualToString:@"a"])
+            {
+                NSLog(@"触摸键盘以后");
+            }
+            
+            //NSLog(@"事件状态码首个字符:%@",firstStatus);
+            
+            
             [self PlaySoundWithChunkEvent:obj];
         }
     }];
