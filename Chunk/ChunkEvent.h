@@ -36,11 +36,21 @@
 
 
 //外界计算得到的属性
-//7-当前的事件在整个播放过程中的播放时间
+//7-当前的事件在整个播放过程中的播放时间(开始时间)
 @property (nonatomic,assign)float eventPlayTime;
 
 //8-当前的事件的即时delta-time
 @property (nonatomic,assign)NSUInteger eventAllDeltaTime;
+
+
+//9-事件音符号(只统计8，9，A开头的事件)
+@property (nonatomic,copy)NSString *midiCode;
+
+//10-事件速度(只统计8，9，A开头的事件)
+@property (nonatomic,copy)NSString *midiSpeed;
+
+//11-钢琴从按下去到释放的持续时间(只统计9开头的事件)
+@property (nonatomic,assign)float eventDuration;
 
 
 //初始化方法:传入事件的1-delta-time位数，2-事件的状态码，3-事件总长度和4-总的data,5当前轨道块在总data中的位置
