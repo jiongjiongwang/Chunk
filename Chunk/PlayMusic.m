@@ -191,7 +191,7 @@
         {
             
             //播放音乐
-            [self PlaySoundWithArray:mEventArray andDelayTime:0];
+            [self PlaySoundWithArray:mEventArray];
             
         }
     
@@ -328,6 +328,8 @@
     
     float startTime = 0.000;
     
+    //记录最小的持续时间
+    __block float minDurationTime = 100.000;
     
     while (startTime < self.midiAllTime)
     {
@@ -350,7 +352,6 @@
                 
                 if ([firstStatus isEqualToString:@"8"])
                 {
-                    //NSLog(@"%@释放键盘%@,速度是%@,所在位置是%ld,当前事件的开始播放时间是%f",obj.eventStatus,obj.midiCode,obj.midiSpeed,obj.location,obj.eventPlayTime);
                     
                     //遍历pressKeyArray数组
                     for (ChunkEvent *event in self.pressKeyArray)
@@ -365,10 +366,18 @@
                             //2-更新9事件的持续时间
                             event.eventDuration = durationTime;
                             
-                            //3-将9事件从数组中移除
+                            //3-记录最小的持续时间
+                            
+                            if (durationTime <= minDurationTime)
+                            {
+                                minDurationTime = durationTime;
+                            }
+                            
+                            
+                            //4-将9事件从数组中移除
                             [self.pressKeyArray removeObject:event];
                             
-                            //4-跳出当期的循环
+                            //5-跳出当期的循环
                             break;
                         }
                     }
@@ -376,7 +385,6 @@
                 }
                 else if ([firstStatus isEqualToString:@"9"])
                 {
-                    //NSLog(@"%@按下键盘%@,速度是%@,所在位置是%ld,当前事件的开始播放时间是%f",obj.eventStatus,obj.midiCode,obj.midiSpeed,obj.location,obj.eventPlayTime);
                     
                     //1-将当前的按下键盘事件(9事件)存放到数组中
                     [self.pressKeyArray addObject:obj];
@@ -392,11 +400,14 @@
         }
         startTime += 0.001;
     }
+    
+    
+    NSLog(@"最小的持续时间是%f",minDurationTime);
 }
 
 //仅仅是放
 //封装一个方法:播放数组事件
--(void)PlaySoundWithArray:(NSMutableArray<ChunkEvent *> *)eventArray andDelayTime:(float)deltaTime
+-(void)PlaySoundWithArray:(NSMutableArray<ChunkEvent *> *)eventArray
 {
     [eventArray enumerateObjectsUsingBlock:^(ChunkEvent * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         //播放音乐的核心代码
@@ -408,12 +419,17 @@
             NSString *firstStatus = [obj.eventStatus substringToIndex:1];
             
             //得出9事件的持续时间
+            
             if ([firstStatus isEqualToString:@"9"])
             {
+                /*
                 NSLog(@"%@按下键盘%@,速度是%@,所在位置是%ld,当前事件的开始播放时间是%f,按下钢琴事件的持续时间是%f",obj.eventStatus,obj.midiCode,obj.midiSpeed,obj.location,obj.eventPlayTime,obj.eventDuration);
+                */
+                NSLog(@"%f秒开始了按下键盘%@,持续时长为%f",obj.eventPlayTime,obj.midiCode,obj.eventDuration);
+                
             }
             
-            
+#warning 接受到外界的播放信息之后再播放
             [self PlaySoundWithChunkEvent:obj];
         }
     }];
